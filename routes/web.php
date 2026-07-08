@@ -1,0 +1,103 @@
+<?php
+
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\BugController as AdminBugController;
+use App\Http\Controllers\Admin\CleaningController as AdminCleaningController;
+use App\Http\Controllers\Admin\CommercialController as AdminCommercialController;
+use App\Http\Controllers\Admin\ContactController as AdminContactController;
+use App\Http\Controllers\Admin\DisinfectionController as AdminDisinfectionController;
+use App\Http\Controllers\Admin\FactoryController as AdminFactoryController;
+use App\Http\Controllers\Admin\FumigationController as AdminFumigationController;
+use App\Http\Controllers\Admin\GeneralPestController as AdminGeneralPestController;
+use App\Http\Controllers\Admin\HomeController as AdminHomeController;
+use App\Http\Controllers\Admin\HomeClientController as AdminHomeClientController;
+use App\Http\Controllers\Admin\HomeContentController as AdminHomeContentController;
+use App\Http\Controllers\Admin\InformationController as AdminInformationController;
+use App\Http\Controllers\Admin\NewsController as AdminNewsController;
+use App\Http\Controllers\Admin\OtherController as AdminOtherController;
+use App\Http\Controllers\Admin\PestController as AdminPestController;
+use App\Http\Controllers\Admin\PestManagementController as AdminPestManagementController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\ResidentialController as AdminResidentialController;
+use App\Http\Controllers\Admin\SliderController as AdminSliderController;
+use App\Http\Controllers\Admin\TermiteBaitingController as AdminTermiteBaitingController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MethodsController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\PestController;
+use App\Http\Controllers\ServiceController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/test-email', [ContactController::class, 'testEmail'])->name('test.email');
+
+Route::get('/commercial', [ServiceController::class, 'commercial']);
+Route::get('/residential', [ServiceController::class, 'residential']);
+Route::get('/industrial', [ServiceController::class, 'industrial']);
+Route::get('/disinfection', [ServiceController::class, 'disinfection']);
+Route::get('/cleaning', [ServiceController::class, 'cleaning']);
+Route::get('/fumigation', [MethodsController::class, 'fumigation']);
+Route::get('/generalpest', [MethodsController::class, 'generalpest']);
+Route::get('/termitebaiting', [MethodsController::class, 'termitebaiting']);
+Route::get('/pest', [PestController::class, 'index']);
+Route::get('/otherpest', [PestController::class, 'other']);
+Route::get('/otherpest/{id}', [PestController::class, 'otherpest'])->name('otherpest.show');
+Route::get('/pest/{id}', [PestController::class, 'show'])->name('bug.show');
+Route::get('/contact_us', [ContactController::class, 'index'])->name('contact.us');
+Route::post('/store', [ContactController::class, 'store'])->name('store-contact');
+Route::get('/news', [NewsController::class, 'index']);
+Route::get('/news/{id}', [NewsController::class, 'show'])->name('news.show');
+
+Route::get('/eng', [HomeController::class, 'index_eng'])->name('home_eng');
+Route::get('/commercial_eng', [ServiceController::class, 'commercial_eng']);
+Route::get('/residential_eng', [ServiceController::class, 'residential_eng']);
+Route::get('/industrial_eng', [ServiceController::class, 'industrial_eng']);
+Route::get('/disinfection_eng', [ServiceController::class, 'disinfection_eng']);
+Route::get('/cleaning_eng', [ServiceController::class, 'cleaning_eng']);
+Route::get('/fumigation_eng', [MethodsController::class, 'fumigation_eng']);
+Route::get('/generalpest_eng', [MethodsController::class, 'generalpest_eng']);
+Route::get('/termitebaiting_eng', [MethodsController::class, 'termitebaiting_eng']);
+Route::get('/pest_eng', [PestController::class, 'index_eng']);
+Route::get('/otherpest_eng', [PestController::class, 'other_eng']);
+Route::get('/otherpest_eng/{id}', [PestController::class, 'otherpest_eng'])->name('otherpest.show_eng');
+Route::get('/pest_eng/{id}', [PestController::class, 'show_eng'])->name('bug.show_eng');
+Route::get('/news_eng', [NewsController::class, 'index_eng']);
+Route::get('/news_eng/{id}', [NewsController::class, 'show_eng'])->name('news.show_eng');
+Route::get('/contact_us_eng', [ContactController::class, 'index_eng'])->name('contact.us_eng');
+Route::post('/store_eng', [ContactController::class, 'store_eng'])->name('store-contact_eng');
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [AdminAuthController::class, 'login']);
+    });
+
+    Route::middleware('auth')->group(function () {
+        Route::get('/', [AdminHomeController::class, 'index'])->name('dashboard');
+        Route::get('/register', [AdminAuthController::class, 'showRegistrationForm'])->name('register');
+        Route::post('/register', [AdminAuthController::class, 'register']);
+        Route::resource('/commercial', AdminCommercialController::class);
+        Route::resource('/residential', AdminResidentialController::class);
+        Route::resource('/factory', AdminFactoryController::class);
+        Route::resource('/disinfection', AdminDisinfectionController::class);
+        Route::resource('/cleaning', AdminCleaningController::class);
+        Route::resource('/general_pest', AdminGeneralPestController::class);
+        Route::resource('/termite_baiting', AdminTermiteBaitingController::class);
+        Route::resource('/fumigation', AdminFumigationController::class);
+        Route::resource('/pest', AdminPestController::class);
+        Route::resource('/bug', AdminBugController::class);
+        Route::resource('/other', AdminOtherController::class);
+        Route::resource('/profile', AdminProfileController::class);
+        Route::resource('/information', AdminInformationController::class);
+        Route::resource('/home-content', AdminHomeContentController::class)->only(['index', 'update']);
+        Route::resource('/home-client', AdminHomeClientController::class)->except(['show']);
+        Route::resource('/contact', AdminContactController::class);
+        Route::resource('/slider', AdminSliderController::class);
+        Route::resource('/pestManagement', AdminPestManagementController::class);
+        Route::resource('/news', AdminNewsController::class);
+        Route::resource('/user', AdminProfileController::class);
+        Route::post('/user/{user}/change-password', [AdminProfileController::class, 'changePassword'])->name('user.changePassword');
+        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+    });
+});
