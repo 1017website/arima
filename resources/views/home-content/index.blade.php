@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('breadcrumb')
-Home Content
+SEO & Home Settings
 @endsection
 
 @section('content')
@@ -13,8 +13,8 @@ Home Content
       <div class="card-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap" style="gap:12px;">
           <div>
-            <h4 class="card-title">Home Content</h4>
-            <p class="card-category mb-0">SEO, analytics, hero video, client copy, dan teks bilingual halaman home.</p>
+            <h4 class="card-title">SEO & Home Settings</h4>
+            <p class="card-category mb-0">Setting SEO, analytics script, hero video, client copy, dan teks bilingual halaman home.</p>
           </div>
           <button class="btn btn-primary" type="submit"><i class="bi bi-save mx-1"></i>Save Changes</button>
         </div>

@@ -7,6 +7,7 @@
 @extends('layouts.arima')
 
 @section('lang', $lang)
+@section('body_class', 'internal-page')
 @section('title', $title.' | ARIMA Indonesia')
 @section('content')
     <section class="page-hero" style="--hero-image: url('{{ $imageUrl }}')">
@@ -35,26 +36,32 @@
                 <h2>{{ $lang === 'en' ? 'Pest reference for faster decisions.' : 'Referensi pest untuk keputusan lebih cepat.' }}</h2>
                 <p>{{ $lang === 'en' ? 'Browse common pest categories handled by ARIMA.' : 'Lihat kategori pest umum yang ditangani ARIMA.' }}</p>
             </div>
-            <div class="grid grid-3">
+            <div class="pest-library-grid">
                 @forelse ($bugs as $bug)
                     @php
                         $media = $bug->icon ?: $bug->header_image;
                         $mediaUrl = $media ? (\Illuminate\Support\Str::startsWith($media, ['http://', 'https://']) ? $media : asset($media)) : 'https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389651/Arima_foto_2_rw8cre.png';
+                        $bugTitle = $lang === 'en' ? ($bug->title_eng ?? $bug->title) : $bug->title;
+                        $bugFact = html_entity_decode($lang === 'en' ? ($bug->funfact_eng ?? $bug->funfact) : $bug->funfact, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                        $bugFactText = trim(strip_tags($bugFact));
                         $showUrl = $lang === 'en'
                             ? ($bug->types == 1 ? route('otherpest.show_eng', $bug->id) : route('bug.show_eng', $bug->id))
                             : ($bug->types == 1 ? route('otherpest.show', $bug->id) : route('bug.show', $bug->id));
                     @endphp
-                    <a class="card" href="{{ $showUrl }}">
-                        <div class="card-media"><img src="{{ $mediaUrl }}" alt="{{ $lang === 'en' ? ($bug->title_eng ?? $bug->title) : $bug->title }}"></div>
-                        <div class="card-body">
+                    <a class="pest-library-card" href="{{ $showUrl }}">
+                        <div class="pest-library-media">
+                            <img src="{{ $mediaUrl }}" alt="{{ $bugTitle }}">
+                        </div>
+                        <div class="pest-library-body">
                             <span class="badge">Pest</span>
-                            <h3>{{ $lang === 'en' ? ($bug->title_eng ?? $bug->title) : $bug->title }}</h3>
-                            <p>{{ \Illuminate\Support\Str::limit(strip_tags($lang === 'en' ? ($bug->funfact_eng ?? $bug->funfact) : $bug->funfact), 110) }}</p>
+                            <h3>{{ $bugTitle }}</h3>
+                            <p>{{ \Illuminate\Support\Str::limit($bugFactText ?: ($lang === 'en' ? 'Pest information is available in the ARIMA library.' : 'Informasi pest tersedia di library ARIMA.'), 120) }}</p>
+                            <span class="pest-library-link">{{ $lang === 'en' ? 'View detail' : 'Lihat detail' }}</span>
                         </div>
                     </a>
                 @empty
-                    <div class="card">
-                        <div class="card-body">
+                    <div class="pest-library-card">
+                        <div class="pest-library-body">
                             <span class="badge">Pest</span>
                             <h3>{{ $lang === 'en' ? 'No pest data yet' : 'Data pest belum tersedia' }}</h3>
                             <p>{{ $lang === 'en' ? 'Add pest content from the CMS.' : 'Tambahkan konten pest melalui CMS.' }}</p>

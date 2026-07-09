@@ -1,12 +1,13 @@
 @php
     $lang = $lang ?? 'id';
     $title = $lang === 'en' ? ($news->title_eng ?? $news->title) : $news->title;
-    $description = $lang === 'en' ? ($news->description_eng ?? $news->description) : $news->description;
+    $description = html_entity_decode($lang === 'en' ? ($news->description_eng ?? $news->description) : $news->description, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     $media = $news->image ? (\Illuminate\Support\Str::startsWith($news->image, ['http://', 'https://']) ? $news->image : asset($news->image)) : 'https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389680/Arima_foto_38_r1d4dr.png';
 @endphp
 @extends('layouts.arima')
 
 @section('lang', $lang)
+@section('body_class', 'internal-page')
 @section('title', $title.' | ARIMA Indonesia')
 @section('content')
     <section class="page-hero" style="--hero-image: url('{{ $media }}')">

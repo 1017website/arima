@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\AnalyticsController as AdminAnalyticsController;
 use App\Http\Controllers\Admin\BugController as AdminBugController;
 use App\Http\Controllers\Admin\CleaningController as AdminCleaningController;
 use App\Http\Controllers\Admin\CommercialController as AdminCommercialController;
@@ -75,6 +76,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::middleware('auth')->group(function () {
         Route::get('/', [AdminHomeController::class, 'index'])->name('dashboard');
+        Route::get('/analytics', [AdminAnalyticsController::class, 'index'])->name('analytics.index');
         Route::get('/register', [AdminAuthController::class, 'showRegistrationForm'])->name('register');
         Route::post('/register', [AdminAuthController::class, 'register']);
         Route::resource('/commercial', AdminCommercialController::class);

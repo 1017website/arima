@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AnalyticsVisit;
 use App\Models\Bug;
 use App\Models\Contact;
 use App\Models\HomeClient;
@@ -24,6 +25,7 @@ class HomeController extends Controller
             ['label' => 'Bugs', 'value' => Bug::count(), 'url' => '/admin/bug', 'icon' => 'bi-grid-3x3-gap'],
             ['label' => 'Contact Leads', 'value' => Contact::count(), 'url' => '/admin/contact', 'icon' => 'bi-inbox'],
             ['label' => 'Home Clients', 'value' => HomeClient::count(), 'url' => '/admin/home-client', 'icon' => 'bi-buildings'],
+            ['label' => 'Visits 30 Days', 'value' => AnalyticsVisit::where('visited_at', '>=', now()->subDays(29)->startOfDay())->count(), 'url' => '/admin/analytics', 'icon' => 'bi-graph-up-arrow'],
         ];
 
         return view('admin-home', compact('user', 'stats'));

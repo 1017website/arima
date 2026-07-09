@@ -6,6 +6,7 @@
 @extends('layouts.arima')
 
 @section('lang', $lang)
+@section('body_class', 'internal-page')
 @section('title', ($lang === 'en' ? 'Contact Us' : 'Hubungi Kami').' | ARIMA Indonesia')
 @section('content')
     <section class="page-hero" style="--hero-image: url('https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389686/Arima_foto_50_gopelo.png')">

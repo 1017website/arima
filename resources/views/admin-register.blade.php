@@ -8,15 +8,25 @@
     <link rel="icon" type="image/png" href="{{ asset('admin-assets/img/favicon.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --red:#e50914; --line:#e5e7eb; --muted:#6b7280; --text:#17171b; }
+        :root {
+            --red:#e50914;
+            --line:#e5e7eb;
+            --muted:#6b7280;
+            --text:#17171b;
+            --font-ui:"Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --font-display:"Sora", var(--font-ui);
+        }
         * { box-sizing: border-box; }
         html, body { min-height: 100%; }
         body {
             margin: 0;
-            font-family: "Manrope", "Geist", system-ui, sans-serif;
+            font-family: var(--font-ui);
             color: var(--text);
+            letter-spacing: 0;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
             background:
                 linear-gradient(135deg, rgba(255,255,255,.92), rgba(245,246,248,.94)),
                 url('{{ asset('admin-assets/img/banner.png') }}') center/cover no-repeat;
@@ -40,22 +50,22 @@
         }
         .brand { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:30px; }
         .brand img { width:164px; height:auto; }
-        .badge { padding:10px 12px; background:var(--red); color:#fff; font-size:11px; font-weight:900; letter-spacing:.12em; text-transform:uppercase; }
-        h1 { margin:0 0 8px; font-family:"Barlow Condensed","Geist",sans-serif; font-size:58px; line-height:.85; letter-spacing:0; text-transform:uppercase; }
+        .badge { padding:10px 12px; background:var(--red); color:#fff; font-size:11px; font-weight:700; letter-spacing:0; text-transform:uppercase; }
+        h1 { margin:0 0 8px; font-family:var(--font-display); font-size:40px; line-height:1.05; letter-spacing:0; }
         p { margin:0 0 26px; color:var(--muted); font-weight:600; }
-        .alert { margin-bottom:18px; padding:13px 14px; border:1px solid var(--line); background:#f9fafb; color:var(--text); font-weight:800; }
+        .alert { margin-bottom:18px; padding:13px 14px; border:1px solid var(--line); background:#f9fafb; color:var(--text); font-weight:600; }
         .alert.success { border-color:#bbf7d0; background:#f0fdf4; color:#166534; }
         .alert.error { border-color:#fecdd3; background:#fff1f2; color:#9f1239; }
         .field { display:grid; gap:8px; margin-bottom:14px; }
-        label { color:#4b5563; font-size:11px; font-weight:900; letter-spacing:.12em; text-transform:uppercase; }
+        label { color:#4b5563; font-size:11px; font-weight:700; letter-spacing:0; text-transform:uppercase; }
         input { width:100%; min-height:52px; padding:0 15px; border:1px solid var(--line); background:#f9fafb; color:var(--text); outline:none; font:inherit; }
         input:focus { border-color:var(--red); box-shadow:0 0 0 3px rgba(229,9,20,.18); }
-        .error-text { color:#be123c; font-size:12px; font-weight:800; }
+        .error-text { color:#be123c; font-size:12px; font-weight:600; }
         .actions { display:grid; grid-template-columns:1fr auto; gap:0; margin-top:22px; }
-        button, .login-link { min-height:54px; border:1px solid rgba(255,255,255,.18); padding:0 18px; font-family:"Geist",sans-serif; font-size:12px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; }
+        button, .login-link { min-height:54px; border:1px solid rgba(255,255,255,.18); padding:0 18px; font-family:var(--font-ui); font-size:12px; font-weight:700; letter-spacing:0; text-transform:uppercase; cursor:pointer; }
         button { background:var(--red); color:#fff; border-color:var(--red); }
         .login-link { display:inline-flex; align-items:center; justify-content:center; color:var(--text); background:#f9fafb; text-decoration:none; }
-        @media (max-width:560px) { .auth-card{padding:26px;} .brand{align-items:flex-start; flex-direction:column;} h1{font-size:48px;} .actions{grid-template-columns:1fr;} }
+        @media (max-width:560px) { .auth-card{padding:26px;} .brand{align-items:flex-start; flex-direction:column;} h1{font-size:34px;} .actions{grid-template-columns:1fr;} }
     </style>
 </head>
 <body>
