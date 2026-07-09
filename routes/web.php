@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\GeneralPestController as AdminGeneralPestControll
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 use App\Http\Controllers\Admin\HomeClientController as AdminHomeClientController;
 use App\Http\Controllers\Admin\HomeContentController as AdminHomeContentController;
+use App\Http\Controllers\Admin\HomeIsoController as AdminHomeIsoController;
 use App\Http\Controllers\Admin\InformationController as AdminInformationController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\OtherController as AdminOtherController;
@@ -94,6 +95,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('/information', AdminInformationController::class);
         Route::resource('/home-content', AdminHomeContentController::class)->only(['index', 'update']);
         Route::resource('/home-client', AdminHomeClientController::class)->except(['show']);
+        Route::resource('/home-iso', AdminHomeIsoController::class)->except(['show']);
         Route::resource('/contact', AdminContactController::class);
         Route::resource('/slider', AdminSliderController::class);
         Route::resource('/pestManagement', AdminPestManagementController::class);

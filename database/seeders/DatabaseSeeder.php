@@ -102,6 +102,13 @@ class DatabaseSeeder extends Seeder
                 'client_title_eng' => 'Our Clients and Partners',
                 'client_description' => 'Logo klien dibuat bergerak menyamping dengan animasi halus, tetap modern, dan berhenti saat kursor diarahkan ke area logo.',
                 'client_description_eng' => 'Trusted by institutions, businesses, and operational facilities across sectors.',
+                'iso_is_active' => true,
+                'iso_kicker' => 'Sertifikasi',
+                'iso_kicker_eng' => 'Certification',
+                'iso_title' => 'Standar Mutu & Sertifikasi ISO',
+                'iso_title_eng' => 'Quality Standard & ISO Certification',
+                'iso_description' => 'Komitmen ARIMA Indonesia terhadap standar mutu, keselamatan, dan layanan profesional yang terdokumentasi.',
+                'iso_description_eng' => 'ARIMA Indonesia is committed to documented quality, safety, and professional service standards.',
                 'seo_title' => 'ARIMA Indonesia | Green Pest Control sejak 1998',
                 'seo_title_eng' => 'ARIMA Indonesia | Green Pest Control Since 1998',
                 'seo_description' => 'ARIMA Indonesia menyediakan pest management, disinfection, fumigation, termite baiting, dan cleaning service sejak 1998.',
@@ -112,6 +119,24 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ],
         );
+
+        foreach ([
+            ['Sertifikat ISO 1', 'ISO Certificate 1', 'https://res.cloudinary.com/dcpleyqfl/image/upload/v1783611268/IMG_4073_ykldoe.png', 1],
+            ['Sertifikat ISO 2', 'ISO Certificate 2', 'https://res.cloudinary.com/dcpleyqfl/image/upload/v1783611268/IMG_4074_zhymcp.png', 2],
+            ['Sertifikat ISO 3', 'ISO Certificate 3', 'https://res.cloudinary.com/dcpleyqfl/image/upload/v1783611268/IMG_4072_rdopba.png', 3],
+        ] as [$title, $titleEng, $image, $sortOrder]) {
+            DB::table('home_isos')->updateOrInsert(
+                ['sort_order' => $sortOrder],
+                [
+                    'title' => $title,
+                    'title_eng' => $titleEng,
+                    'image' => $image,
+                    'is_active' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+            );
+        }
 
         foreach ([
             ['BKD', 'Jatim', 'East Java'],

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Contact;
 use App\Models\HomeClient;
 use App\Models\HomeContent;
+use App\Models\HomeIso;
 use App\Models\Information;
 use App\Models\Slider;
 use App\Models\Commercial;
@@ -38,6 +39,9 @@ class HomeController extends Controller
         $homeContent = $this->tableExists('home_contents') ? HomeContent::first() : null;
         $clients = $this->tableExists('home_clients')
             ? HomeClient::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get()
+            : collect();
+        $homeIsos = $this->tableExists('home_isos')
+            ? HomeIso::where('is_active', true)->orderBy('sort_order')->orderBy('title')->get()
             : collect();
 
         $fallbackClients = collect([
@@ -76,6 +80,7 @@ class HomeController extends Controller
             'information' => $information,
             'homeContent' => $homeContent,
             'clients' => $clients,
+            'homeIsos' => $homeIsos,
             'primaryClients' => $primaryClients,
             'secondaryClients' => $secondaryClients,
             'seo' => [

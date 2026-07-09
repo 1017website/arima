@@ -39,6 +39,13 @@ class HomeContentController extends Controller
             'client_title_eng' => 'nullable|string|max:255',
             'client_description' => 'nullable|string',
             'client_description_eng' => 'nullable|string',
+            'iso_is_active' => 'nullable|boolean',
+            'iso_kicker' => 'nullable|string|max:255',
+            'iso_kicker_eng' => 'nullable|string|max:255',
+            'iso_title' => 'nullable|string|max:255',
+            'iso_title_eng' => 'nullable|string|max:255',
+            'iso_description' => 'nullable|string',
+            'iso_description_eng' => 'nullable|string',
             'seo_title' => 'nullable|string|max:255',
             'seo_title_eng' => 'nullable|string|max:255',
             'seo_description' => 'nullable|string',
@@ -49,6 +56,8 @@ class HomeContentController extends Controller
             'analytics_head' => 'nullable|string',
             'analytics_body' => 'nullable|string',
         ]);
+
+        $validated['iso_is_active'] = $request->boolean('iso_is_active');
 
         foreach (['hero_video', 'hero_poster', 'og_image'] as $field) {
             if (!$request->hasFile($field)) {
@@ -84,6 +93,13 @@ class HomeContentController extends Controller
             'client_title_eng' => 'Our Clients and Partners',
             'client_description' => 'Dipercaya oleh institusi, bisnis, dan fasilitas operasional di berbagai sektor.',
             'client_description_eng' => 'Trusted by institutions, businesses, and operational facilities across sectors.',
+            'iso_is_active' => true,
+            'iso_kicker' => 'Sertifikasi',
+            'iso_kicker_eng' => 'Certification',
+            'iso_title' => 'Standar Mutu & Sertifikasi ISO',
+            'iso_title_eng' => 'Quality Standard & ISO Certification',
+            'iso_description' => 'Komitmen ARIMA Indonesia terhadap standar mutu, keselamatan, dan layanan profesional yang terdokumentasi.',
+            'iso_description_eng' => 'ARIMA Indonesia is committed to documented quality, safety, and professional service standards.',
             'seo_title' => 'ARIMA Indonesia | Green Pest Control sejak 1998',
             'seo_title_eng' => 'ARIMA Indonesia | Green Pest Control Since 1998',
             'seo_description' => 'ARIMA Indonesia menyediakan pest management, disinfection, fumigation, termite baiting, dan cleaning service sejak 1998.',

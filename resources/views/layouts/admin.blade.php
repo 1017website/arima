@@ -887,6 +887,10 @@
           <i class="bi bi-buildings"></i>
           <span>Home Clients</span>
         </a>
+        <a class="{{ $isActive('admin/home-iso*') }}" href="/admin/home-iso">
+          <i class="bi bi-award"></i>
+          <span>Home ISO</span>
+        </a>
         <a class="{{ $isActive('admin/slider*') }}" href="/admin/slider">
           <i class="bi bi-images"></i>
           <span>Slider</span>

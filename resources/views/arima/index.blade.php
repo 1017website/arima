@@ -1085,6 +1085,182 @@
     }
     @keyframes slideText { to { transform: translateX(-50%); } }
 
+    /* ISO SECTION */
+    .iso-section {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(48px, 5vw, 74px) 0;
+      background:
+        radial-gradient(circle at 8% 8%, rgba(229,9,20,.18), transparent 30%),
+        radial-gradient(circle at 96% 8%, rgba(229,9,20,.10), transparent 26%),
+        linear-gradient(180deg, #050507 0%, #0b0c10 100%);
+      color: #fff;
+      border-top: 1px solid rgba(255,255,255,.10);
+      border-bottom: 1px solid rgba(255,255,255,.10);
+    }
+    .iso-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(229,9,20,.10), transparent 38%);
+      opacity: .55;
+      pointer-events: none;
+    }
+    .iso-section::after {
+      content: "ISO";
+      position: absolute;
+      right: clamp(16px, 5vw, 84px);
+      top: 24px;
+      color: rgba(255,255,255,.025);
+      font-family: "Barlow Condensed", "Geist", sans-serif;
+      font-size: clamp(70px, 10vw, 150px);
+      font-weight: 950;
+      line-height: .72;
+      letter-spacing: -.07em;
+      pointer-events: none;
+    }
+    .iso-section .container { position: relative; z-index: 2; }
+    .iso-section .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 390px);
+      align-items: end;
+      gap: clamp(18px, 3vw, 44px);
+      max-width: 1010px;
+      margin: 0 auto 22px;
+      padding-left: 0;
+      border-left: 0;
+    }
+    .iso-section .section-head > div {
+      padding-left: 18px;
+      border-left: 5px solid var(--red);
+    }
+    .iso-section .kicker {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 0 9px;
+      margin-bottom: 10px;
+      background: rgba(229,9,20,.16);
+      border: 1px solid rgba(229,9,20,.58);
+      color: #fff;
+      font-size: 10px;
+      letter-spacing: .16em;
+    }
+    .iso-section .section-head h2 {
+      max-width: 650px;
+      color: #fff;
+      font-family: "Barlow Condensed", "Geist", sans-serif;
+      font-size: clamp(34px, 4vw, 58px);
+      line-height: .90;
+      letter-spacing: -.04em;
+      text-transform: uppercase;
+    }
+    .iso-section .section-head p {
+      max-width: 390px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.72);
+      font-size: 13px;
+      line-height: 1.65;
+      font-weight: 650;
+    }
+    .iso-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      max-width: 1010px;
+      margin: 0 auto;
+      padding: 10px;
+      align-items: stretch;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.035);
+      backdrop-filter: blur(10px);
+    }
+    .iso-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(255,255,255,.11);
+      border-radius: 0;
+      background: #0b0c10;
+      box-shadow: none;
+      transition: transform .22s ease, border-color .22s ease, background .22s ease;
+    }
+    .iso-card::before {
+      content: "";
+      display: block;
+      height: 3px;
+      width: 100%;
+      background: var(--red);
+      flex: 0 0 auto;
+    }
+    .iso-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(229,9,20,.70);
+      background: #101116;
+    }
+    .iso-card .iso-image-button {
+      width: 100%;
+      min-height: 248px;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: linear-gradient(180deg, #ffffff, #f7f7f7);
+      border-radius: 0;
+      border: 0;
+      overflow: hidden;
+      cursor: zoom-in;
+      position: relative;
+      text-align: center;
+      appearance: none;
+    }
+    .iso-card .iso-image-button::after { content: none !important; display: none !important; }
+    .iso-card .iso-image-button img {
+      display: block;
+      width: auto !important;
+      height: auto !important;
+      max-width: 92% !important;
+      max-height: 212px !important;
+      margin: auto !important;
+      object-fit: contain !important;
+      object-position: center center !important;
+      transform: none !important;
+      filter: drop-shadow(0 10px 18px rgba(8,8,10,.12));
+    }
+    .iso-card .iso-image-button:hover img {
+      transform: none !important;
+      filter: drop-shadow(0 12px 22px rgba(8,8,10,.16));
+    }
+    .iso-card-caption {
+      position: static;
+      left: auto;
+      right: auto;
+      bottom: auto;
+      min-height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: #0b0c10;
+      color: #fff;
+      border: 0;
+      border-top: 1px solid rgba(255,255,255,.10);
+      backdrop-filter: none;
+      font-size: 10px;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      pointer-events: none;
+    }
+    .iso-card-caption span:first-child {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     /* TYPOGRAPHY + SECTION HEADS */
     .kicker {
       color: var(--red);
@@ -1492,6 +1668,11 @@
     }
     @media (max-width: 940px) {
       .section { padding: 88px 0; }
+      .iso-section .section-head { grid-template-columns: 1fr; gap: 14px; }
+      .iso-section .section-head p { max-width: none; }
+      .iso-grid { grid-template-columns: 1fr; padding: 8px; }
+      .iso-card .iso-image-button { min-height: 260px; }
+      .iso-card .iso-image-button img { max-height: 224px !important; }
       .split { display: block; }
       .split-copy { padding: 32px; }
       .coverage-grid { grid-template-columns: 1fr; }
@@ -1505,6 +1686,9 @@
       .brand { height: 74px; }
       .brand img { width: 138px; }
       .hero-content { padding-top: 118px; }
+      .iso-section { padding: 44px 0; }
+      .iso-card .iso-image-button { min-height: 232px; padding: 14px; }
+      .iso-card .iso-image-button img { max-height: 198px !important; }
       .hero-copy { padding: 24px 20px; border-left-width: 5px; }
       .hero h1 { font-size: 72px; }
       .hero-actions { display: grid; grid-template-columns: 1fr; }
@@ -1622,7 +1806,36 @@
       </div>
     </div>
 
+    @if(($homeContent?->iso_is_active ?? true) && isset($homeIsos) && $homeIsos->isNotEmpty())
+      <section class="section iso-section" id="iso">
+        <div class="container">
+          <div class="section-head reveal">
+            <div>
+              <span class="kicker">{{ !empty($isEnglish) ? ($homeContent?->iso_kicker_eng ?: $homeContent?->iso_kicker ?: 'Certification') : ($homeContent?->iso_kicker ?: 'Sertifikasi') }}</span>
+              <h2>{{ !empty($isEnglish) ? ($homeContent?->iso_title_eng ?: $homeContent?->iso_title ?: 'Quality Standard & ISO Certification') : ($homeContent?->iso_title ?: 'Standar Mutu & Sertifikasi ISO') }}</h2>
+            </div>
+            <p>{{ !empty($isEnglish) ? ($homeContent?->iso_description_eng ?: $homeContent?->iso_description ?: 'ARIMA Indonesia is committed to documented quality, safety, and professional service standards.') : ($homeContent?->iso_description ?: 'Komitmen ARIMA Indonesia terhadap standar mutu, keselamatan, dan layanan profesional yang terdokumentasi.') }}</p>
+          </div>
 
+          <div class="iso-grid">
+            @foreach($homeIsos as $iso)
+              @php
+                $isoImage = $iso->image && str_starts_with($iso->image, 'http') ? $iso->image : ($iso->image ? asset($iso->image) : null);
+                $isoTitle = !empty($isEnglish) ? ($iso->title_eng ?: $iso->title ?: 'ISO Certificate') : ($iso->title ?: 'Sertifikat ISO');
+              @endphp
+              @if($isoImage)
+                <article class="iso-card reveal">
+                  <button class="iso-image-button js-lightbox" type="button" data-src="{{ $isoImage }}" data-alt="{{ $isoTitle }}">
+                    <img loading="lazy" src="{{ $isoImage }}" alt="{{ $isoTitle }}">
+                  </button>
+                  <div class="iso-card-caption"><span>{{ $isoTitle }}</span></div>
+                </article>
+              @endif
+            @endforeach
+          </div>
+        </div>
+      </section>
+    @endif
 
     <section class="section client-section" id="clients">
       <div class="container">

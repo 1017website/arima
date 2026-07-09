@@ -30,6 +30,13 @@ class HomeContent extends Model
         'client_title_eng',
         'client_description',
         'client_description_eng',
+        'iso_is_active',
+        'iso_kicker',
+        'iso_kicker_eng',
+        'iso_title',
+        'iso_title_eng',
+        'iso_description',
+        'iso_description_eng',
         'seo_title',
         'seo_title_eng',
         'seo_description',
@@ -40,4 +47,9 @@ class HomeContent extends Model
         'analytics_head',
         'analytics_body',
     ];
+
+    protected $casts = [
+        'iso_is_active' => 'boolean',
+    ];
 }
+

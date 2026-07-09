@@ -98,6 +98,32 @@ SEO & Home Settings
         </div>
 
         <hr>
+        <h5 class="mb-3">ISO Section Copy</h5>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label>Status ISO Section</label>
+              <div style="padding-top:10px;">
+                <label style="display:flex;gap:8px;align-items:center;text-transform:none;letter-spacing:0;font-size:14px;">
+                  <input type="checkbox" name="iso_is_active" value="1" {{ old('iso_is_active', $homeContent->iso_is_active ?? true) ? 'checked' : '' }}>
+                  Tampilkan section ISO di halaman home
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group"><label>Kicker ID</label><input class="form-control" name="iso_kicker" value="{{ old('iso_kicker', $homeContent->iso_kicker) }}"></div>
+            <div class="form-group"><label>Title ID</label><input class="form-control" name="iso_title" value="{{ old('iso_title', $homeContent->iso_title) }}"></div>
+            <div class="form-group"><label>Description ID</label><textarea class="form-control" name="iso_description" rows="4">{{ old('iso_description', $homeContent->iso_description) }}</textarea></div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group"><label>Kicker EN</label><input class="form-control" name="iso_kicker_eng" value="{{ old('iso_kicker_eng', $homeContent->iso_kicker_eng) }}"></div>
+            <div class="form-group"><label>Title EN</label><input class="form-control" name="iso_title_eng" value="{{ old('iso_title_eng', $homeContent->iso_title_eng) }}"></div>
+            <div class="form-group"><label>Description EN</label><textarea class="form-control" name="iso_description_eng" rows="4">{{ old('iso_description_eng', $homeContent->iso_description_eng) }}</textarea></div>
+          </div>
+        </div>
+
+        <hr>
         <h5 class="mb-3">SEO</h5>
         <div class="row">
           <div class="col-md-6">
