@@ -43,6 +43,9 @@ class HomeController extends Controller
         $homeIsos = $this->tableExists('home_isos')
             ? HomeIso::where('is_active', true)->orderBy('sort_order')->orderBy('title')->get()
             : collect();
+        $latestNews = $this->tableExists('news')
+            ? News::latest()->take(3)->get()
+            : collect();
 
         $fallbackClients = collect([
             ['name' => 'BKD', 'subtitle' => 'Jatim', 'subtitle_eng' => 'East Java'],
@@ -68,11 +71,15 @@ class HomeController extends Controller
         $isEnglish = $locale === 'en';
 
         $seoTitle = $this->localized($homeContent, 'seo_title', $locale)
+            ?: ($isEnglish ? ($information?->meta_title_eng ?: $information?->meta_title) : $information?->meta_title)
             ?: ($isEnglish ? 'ARIMA Indonesia | Green Pest Control Since 1998' : 'ARIMA Indonesia | Green Pest Control sejak 1998');
         $seoDescription = $this->localized($homeContent, 'seo_description', $locale)
+            ?: ($isEnglish ? ($information?->meta_description_eng ?: $information?->meta_description) : $information?->meta_description)
             ?: ($isEnglish
                 ? 'ARIMA Indonesia provides pest management, disinfection, fumigation, termite baiting, and cleaning services since 1998.'
                 : 'ARIMA Indonesia menyediakan pest management, disinfection, fumigation, termite baiting, dan cleaning service sejak 1998.');
+        $seoKeywords = $this->localized($homeContent, 'seo_keywords', $locale)
+            ?: ($isEnglish ? ($information?->meta_keywords_eng ?: $information?->meta_keywords) : $information?->meta_keywords);
 
         return [
             'locale' => $locale,
@@ -81,13 +88,14 @@ class HomeController extends Controller
             'homeContent' => $homeContent,
             'clients' => $clients,
             'homeIsos' => $homeIsos,
+            'latestNews' => $latestNews,
             'primaryClients' => $primaryClients,
             'secondaryClients' => $secondaryClients,
             'seo' => [
                 'title' => $seoTitle,
                 'description' => $seoDescription,
-                'keywords' => $this->localized($homeContent, 'seo_keywords', $locale),
-                'og_image' => $homeContent?->og_image,
+                'keywords' => $seoKeywords,
+                'og_image' => $homeContent?->og_image ?: $information?->meta_image,
                 'canonical' => $isEnglish ? url('/eng') : url('/'),
                 'alternate' => $isEnglish ? url('/') : url('/eng'),
             ],

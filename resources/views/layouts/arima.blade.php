@@ -1,5 +1,5 @@
 @php
-    $info = $information ?? null;
+    $info = $information ?? $siteInformation ?? null;
     $siteName = $info->name ?? 'ARIMA Indonesia';
     $phone = $info->phone_1 ?? '+62 31 766 1422';
     $waNumber = preg_replace('/\D+/', '', $info->phone_wa ?? '628113000655');
@@ -7,8 +7,23 @@
     $waUrl = $info->link_wa ?? ('https://wa.me/'.$waNumber.'?text='.urlencode($waText));
     $email = $info->email ?? 'info@arimaindonesia.com';
     $address = $info->address ?? 'Jl. Raya Wiyung Indah No.7 Surabaya 60228';
-    $logo = asset('assets/arima/logo-new.PNG');
     $isEnglishPage = request()->is('eng') || request()->is('*_eng') || request()->is('*_eng/*');
+    $logoPath = $info?->frontend_logo ?: $info?->logo_company ?: $info?->logo_header;
+    $faviconPath = $info?->frontend_favicon ?: $info?->logo_favicon;
+    $metaImagePath = $info?->meta_image ?: $logoPath;
+    $logo = $logoPath ? asset($logoPath) : asset('assets/arima/logo-new.PNG');
+    $favicon = $faviconPath ? asset($faviconPath) : asset('favicon.png');
+    $defaultMetaTitle = $isEnglishPage
+        ? ($info?->meta_title_eng ?: $info?->meta_title ?: $siteName)
+        : ($info?->meta_title ?: $siteName);
+    $defaultMetaDescription = $isEnglishPage
+        ? ($info?->meta_description_eng ?: $info?->meta_description ?: 'ARIMA Indonesia provides pest management, disinfection, fumigation, termite baiting, and cleaning services since 1998.')
+        : ($info?->meta_description ?: 'ARIMA Indonesia - green pest control, pest management, disinfection, fumigation, termite baiting, dan cleaning service sejak 1998.');
+    $defaultMetaKeywords = $isEnglishPage
+        ? ($info?->meta_keywords_eng ?: $info?->meta_keywords)
+        : $info?->meta_keywords;
+    $pageTitle = trim($__env->yieldContent('title', $defaultMetaTitle));
+    $pageDescription = trim($__env->yieldContent('meta_description', $defaultMetaDescription));
     $homeUrl = url($isEnglishPage ? '/eng' : '/');
     $serviceUrls = [
         'commercial' => url($isEnglishPage ? '/commercial_eng' : '/commercial'),
@@ -34,8 +49,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="@yield('meta_description', 'ARIMA Indonesia - green pest control, pest management, disinfection, fumigation, termite baiting, dan cleaning service sejak 1998.')">
-    <title>@yield('title', $siteName)</title>
+    <meta name="description" content="{{ $pageDescription }}">
+    @if($defaultMetaKeywords)
+    <meta name="keywords" content="{{ $defaultMetaKeywords }}">
+    @endif
+    <meta property="og:site_name" content="{{ $siteName }}">
+    <meta property="og:title" content="{{ $pageTitle }}">
+    <meta property="og:description" content="{{ $pageDescription }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    @if($metaImagePath)
+    <meta property="og:image" content="{{ asset($metaImagePath) }}">
+    @endif
+    <title>{{ $pageTitle }}</title>
+    <link rel="icon" type="image/png" href="{{ $favicon }}">
+    @if($info?->google_adsense_client_id)
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ $info->google_adsense_client_id }}" crossorigin="anonymous"></script>
+    @endif
+    @if($info?->google_ads_head_script)
+    {!! $info->google_ads_head_script !!}
+    @endif
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -1416,6 +1448,9 @@
     @stack('styles')
 </head>
 <body class="@yield('body_class', '')">
+    @if($info?->google_ads_body_script)
+    {!! $info->google_ads_body_script !!}
+    @endif
     <header class="site-header">
         <div class="topbar">
             <div class="container">

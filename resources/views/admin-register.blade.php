@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Register Admin | ARIMA</title>
-    <link rel="icon" type="image/png" href="{{ asset('admin-assets/img/favicon.png') }}">
+    @php
+        $authInfo = $siteInformation ?? null;
+        $authFaviconPath = $authInfo?->cms_favicon ?: $authInfo?->frontend_favicon ?: $authInfo?->logo_favicon;
+        $authLogoPath = $authInfo?->cms_login_logo ?: $authInfo?->frontend_logo ?: $authInfo?->logo_company ?: $authInfo?->logo_header;
+    @endphp
+    <link rel="icon" type="image/png" href="{{ $authFaviconPath ? asset($authFaviconPath) : asset('admin-assets/img/favicon.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
@@ -72,7 +77,7 @@
     <main class="auth-page">
         <section class="auth-card">
             <div class="brand">
-                <img src="{{ asset('assets/arima/logo-new.PNG') }}" alt="ARIMA Indonesia">
+                <img src="{{ $authLogoPath ? asset($authLogoPath) : asset('assets/arima/logo-new.PNG') }}" alt="ARIMA Indonesia">
                 <span class="badge">CMS</span>
             </div>
             <h1>Register Admin</h1>

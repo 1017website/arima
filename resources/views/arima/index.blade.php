@@ -1,3 +1,22 @@
+@php
+  $info = $information ?? $siteInformation ?? null;
+  $isEnglishHome = ($locale ?? 'id') === 'en';
+  $siteName = $info->name ?? 'ARIMA Indonesia';
+  $phonePrimary = $info?->phone_1 ?: '+62 31 766 1422';
+  $phoneSecondary = $info?->phone_2 ?: '+62 31 766 4086';
+  $phoneSms = $info?->phone_sms ?: '+62 811-3000-655';
+  $emailAddress = $info?->email ?: 'info@arimaindonesia.com';
+  $websiteLink = $info?->website_link ?: 'arimaindonesia.com';
+  $officeAddress = $info?->address ?: 'Jl. Raya Wiyung Indah No.7 Surabaya 60228';
+  $logoPath = $info?->frontend_logo ?: $info?->logo_company ?: $info?->logo_header;
+  $faviconPath = $info?->frontend_favicon ?: $info?->logo_favicon;
+  $metaImagePath = $info?->meta_image ?: ($seo['og_image'] ?? null) ?: $logoPath;
+  $frontendLogo = $logoPath ? asset($logoPath) : asset('assets/arima/logo-new.PNG');
+  $frontendFavicon = $faviconPath ? asset($faviconPath) : asset('favicon.png');
+  $servicePrefix = $isEnglishHome ? '_eng' : '';
+  $homeContactUrl = $isEnglishHome ? url('/contact_us_eng') : url('/contact_us');
+  $homeNewsUrl = $isEnglishHome ? url('/news_eng') : url('/news');
+@endphp
 <!DOCTYPE html>
 <html lang="{{ $locale ?? 'id' }}">
 <head>
@@ -17,13 +36,20 @@
   <meta property="og:title" content="{{ $seo['title'] ?? 'ARIMA Indonesia' }}" />
   <meta property="og:description" content="{{ $seo['description'] ?? '' }}" />
   <meta property="og:url" content="{{ $seo['canonical'] ?? url()->current() }}" />
-  @if(!empty($seo['og_image']))
-  <meta property="og:image" content="{{ asset($seo['og_image']) }}" />
+  @if($metaImagePath)
+  <meta property="og:image" content="{{ asset($metaImagePath) }}" />
   @endif
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="{{ $seo['title'] ?? 'ARIMA Indonesia' }}" />
   <meta name="twitter:description" content="{{ $seo['description'] ?? '' }}" />
   <title>{{ $seo['title'] ?? 'ARIMA Indonesia' }}</title>
+  <link rel="icon" type="image/png" href="{{ $frontendFavicon }}" />
+  @if($info?->google_adsense_client_id)
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ $info->google_adsense_client_id }}" crossorigin="anonymous"></script>
+  @endif
+  @if($info?->google_ads_head_script)
+  {!! $info->google_ads_head_script !!}
+  @endif
   @if(!empty($homeContent?->analytics_head))
   {!! $homeContent->analytics_head !!}
   @endif
@@ -598,6 +624,12 @@
       backdrop-filter: blur(16px);
       font-size: 12px;
       font-weight: 800;
+      text-decoration: none;
+    }
+    .map-note:hover {
+      border-color: rgba(229,9,20,.62);
+      background: rgba(229,9,20,.16);
+      color: #fff;
     }
 
     .news-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
@@ -618,9 +650,9 @@
     .contact-list { display: grid; gap: 12px; margin-top: 24px; }
     .contact-list a {
       display: grid;
-      grid-template-columns: 44px 1fr;
+      grid-template-columns: 52px minmax(0, 1fr) auto;
       gap: 14px;
-      align-items: start;
+      align-items: center;
       padding: 16px;
       border: 1px solid rgba(255,255,255,.12);
       border-radius: 20px;
@@ -628,9 +660,24 @@
       transition: .2s ease;
     }
     .contact-list a:hover { background: rgba(229,9,20,.18); transform: translateX(4px); }
-    .contact-list i { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 16px; background: var(--red); color: #fff; font-style: normal; font-weight: 950; }
+    .contact-list i { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 16px; background: var(--red); color: #fff; font-style: normal; font-weight: 950; }
+    .contact-list i svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
     .contact-list b { display: block; }
     .contact-list span span { display: block; color: rgba(255,255,255,.68); font-size: 13px; font-weight: 650; }
+    .contact-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 32px;
+      padding: 0 10px;
+      border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.76);
+      font-size: 10px;
+      font-weight: 950;
+      font-style: normal;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
     .contact-side {
       position: relative;
       min-height: 680px;
@@ -760,6 +807,8 @@
       .stack-float { width: 58%; height: 46%; border-width: 7px; }
       .stat-card { left: 14px; bottom: 28px; }
       .coverage-copy, .contact-copy { padding: 28px; }
+      .contact-list a { grid-template-columns: 52px minmax(0, 1fr); }
+      .contact-action { grid-column: 2; justify-self: start; }
       .region-list { grid-template-columns: 1fr; }
       .map-note { flex-direction: column; align-items: start; }
       .coverage-card { width: min(100% - 28px, var(--container)); }
@@ -768,6 +817,8 @@
       #coverageMap { min-height: 460px !important; }
       .map-title { max-width: calc(100% - 116px); }
       .map-title span { display: none; }
+      .floating-wa { right: 14px; bottom: 14px; width: 56px; height: 56px; }
+      .floating-wa svg { width: 27px; height: 27px; }
       .footer-row { flex-direction: column; justify-content: center; text-align: center; padding: 30px 0; }
       .footer-links { justify-content: center; }
     }
@@ -1454,11 +1505,29 @@
     }
     .contact-copy { border-right: 1px solid rgba(255,255,255,.12); }
     .contact-list a {
-      background: #111115;
-      border: 1px solid rgba(255,255,255,.12);
+      min-height: 94px;
+      background: linear-gradient(180deg, #15151a, #101014);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: inset 4px 0 0 rgba(239,17,29,.74);
     }
-    .contact-list a:hover { background: var(--red); transform: none; }
-    .contact-list i { background: var(--red); }
+    .contact-list a:hover {
+      background: linear-gradient(180deg, rgba(239,17,29,.22), rgba(16,16,20,1));
+      border-color: rgba(239,17,29,.62);
+      transform: translateX(4px);
+    }
+    .contact-list i {
+      background: var(--red);
+      box-shadow: 0 0 24px rgba(239,17,29,.32);
+    }
+    .contact-action {
+      background: rgba(255,255,255,.04);
+      border-color: rgba(255,255,255,.14);
+    }
+    .contact-list a:hover .contact-action {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+    }
     .contact-form {
       background: #050506;
       color: #fff;
@@ -1524,12 +1593,99 @@
       animation: waShine 2.4s ease-in-out infinite;
     }
     .btn-whatsapp > * { position: relative; z-index: 2; }
+    .btn-video-pulse {
+      position: relative;
+      overflow: visible;
+      isolation: isolate;
+      background: var(--red) !important;
+      border-color: var(--red) !important;
+      color: #fff !important;
+      box-shadow:
+        0 0 18px rgba(229, 9, 20, .58),
+        0 0 0 0 rgba(229, 9, 20, .30),
+        inset 0 1px 0 rgba(255,255,255,.28);
+      animation: videoRedPulse 1.55s ease-in-out infinite;
+    }
+    .btn-video-pulse::before {
+      content: "";
+      position: absolute;
+      inset: -9px;
+      z-index: -2;
+      border: 1px solid rgba(229, 9, 20, .55);
+      background: rgba(229, 9, 20, .17);
+      filter: blur(7px);
+      opacity: .8;
+      pointer-events: none;
+      animation: videoRedHalo 1.55s ease-in-out infinite;
+    }
+    .btn-video-pulse:hover {
+      background: var(--red-2) !important;
+      border-color: var(--red-2) !important;
+      box-shadow:
+        8px 8px 0 rgba(229, 9, 20, .26),
+        0 0 28px rgba(229, 9, 20, .70),
+        0 0 58px rgba(229, 9, 20, .38);
+    }
+    .btn-video-pulse::after {
+      content: "";
+      position: absolute;
+      inset: -8px auto -8px -70%;
+      z-index: 0;
+      width: 44%;
+      transform: skewX(-24deg);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.78), transparent);
+      filter: blur(.2px);
+      opacity: .82;
+      pointer-events: none;
+      animation: waShine 2.4s ease-in-out infinite;
+    }
+    .btn-video-pulse > * { position: relative; z-index: 2; }
     .wa-icon {
       width: 20px;
       height: 20px;
       flex: 0 0 20px;
       fill: currentColor;
       filter: drop-shadow(0 2px 7px rgba(0,0,0,.28));
+    }
+    .floating-wa {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 1400;
+      width: 64px;
+      height: 64px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.18);
+      background: #25D366;
+      color: #fff;
+      box-shadow:
+        0 18px 44px rgba(0,0,0,.34),
+        0 0 28px rgba(37,211,102,.55);
+      animation: waElegantPulse 1.55s ease-in-out infinite;
+    }
+    .floating-wa::before {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      z-index: -1;
+      border: 1px solid rgba(37,211,102,.48);
+      background: rgba(37,211,102,.14);
+      filter: blur(8px);
+      animation: waElegantHalo 1.55s ease-in-out infinite;
+    }
+    .floating-wa:hover {
+      background: #1ebe5d;
+      color: #fff;
+      transform: translateY(-3px);
+      box-shadow:
+        0 22px 54px rgba(0,0,0,.40),
+        0 0 42px rgba(37,211,102,.68);
+    }
+    .floating-wa svg {
+      width: 31px;
+      height: 31px;
+      fill: currentColor;
     }
     .btn-arrow { margin-left: -2px; opacity: .9; }
     @keyframes waElegantPulse {
@@ -1550,6 +1706,27 @@
       }
     }
     @keyframes waElegantHalo {
+      0%, 100% { opacity: .36; transform: scale(.96); }
+      48% { opacity: .92; transform: scale(1.06); }
+    }
+    @keyframes videoRedPulse {
+      0%, 100% {
+        box-shadow:
+          0 0 14px rgba(229, 9, 20, .48),
+          0 0 0 0 rgba(229, 9, 20, .28),
+          inset 0 1px 0 rgba(255,255,255,.22);
+        filter: brightness(1);
+      }
+      48% {
+        box-shadow:
+          0 0 30px rgba(229, 9, 20, .86),
+          0 0 0 8px rgba(229, 9, 20, .12),
+          0 0 64px rgba(229, 9, 20, .38),
+          inset 0 1px 0 rgba(255,255,255,.34);
+        filter: brightness(1.12);
+      }
+    }
+    @keyframes videoRedHalo {
       0%, 100% { opacity: .36; transform: scale(.96); }
       48% { opacity: .92; transform: scale(1.06); }
     }
@@ -1636,6 +1813,10 @@
     @media (prefers-reduced-motion: reduce) {
       .btn-whatsapp,
       .btn-whatsapp::after,
+      .floating-wa,
+      .floating-wa::before,
+      .btn-video-pulse,
+      .btn-video-pulse::after,
       .client-marquee-track { animation: none !important; }
     }
 
@@ -1701,21 +1882,24 @@
 
 </head>
 <body>
+  @if($info?->google_ads_body_script)
+  {!! $info->google_ads_body_script !!}
+  @endif
   @if(!empty($homeContent?->analytics_body))
   {!! $homeContent->analytics_body !!}
   @endif
   <header class="site-header">
     <div class="topbar">
       <div class="container">
-        <a href="tel:+62317661422">☎ +62 31 766 1422</a>
-        <a href="mailto:info@arimaindonesia.com">✉ info@arimaindonesia.com</a>
+        <a href="tel:{{ preg_replace('/\D+/', '', $phonePrimary) }}">Phone {{ $phonePrimary }}</a>
+        <a href="mailto:{{ $emailAddress }}">Email {{ $emailAddress }}</a>
         <a href="https://www.instagram.com/arimapestclean" target="_blank" rel="noopener">@arimapestclean</a>
       </div>
     </div>
 
     <div class="container navrow">
       <a class="brand" href="#home" aria-label="ARIMA Indonesia Home">
-        <img src="{{ asset('assets/arima/logo-new.PNG') }}" alt="Logo ARIMA Indonesia" />
+        <img src="{{ $frontendLogo }}" alt="Logo ARIMA Indonesia" />
       </a>
 
       <nav class="main-nav" id="mainNav" aria-label="Main navigation">
@@ -1724,28 +1908,28 @@
         <div class="nav-item">
           <button class="drop-trigger" type="button" aria-expanded="false">Service Solution <span>⌄</span></button>
           <div class="dropdown">
-            <a href="{{ url('/commercial') }}" target="_blank" rel="noopener">Commercial Protection</a>
-            <a href="{{ url('/residential') }}" target="_blank" rel="noopener">Residential Protection</a>
-            <a href="{{ url('/industrial') }}" target="_blank" rel="noopener">Industrial Protection</a>
-            <a href="{{ url('/disinfection') }}" target="_blank" rel="noopener">Disinfection Protection</a>
-            <a href="{{ url('/cleaning') }}" target="_blank" rel="noopener">Cleaning Service</a>
+            <a href="{{ url('/commercial'.$servicePrefix) }}" target="_blank" rel="noopener">Commercial Protection</a>
+            <a href="{{ url('/residential'.$servicePrefix) }}" target="_blank" rel="noopener">Residential Protection</a>
+            <a href="{{ url('/industrial'.$servicePrefix) }}" target="_blank" rel="noopener">Industrial Protection</a>
+            <a href="{{ url('/disinfection'.$servicePrefix) }}" target="_blank" rel="noopener">Disinfection Protection</a>
+            <a href="{{ url('/cleaning'.$servicePrefix) }}" target="_blank" rel="noopener">Cleaning Service</a>
           </div>
         </div>
 
         <div class="nav-item">
           <button class="drop-trigger" type="button" aria-expanded="false">Method <span>⌄</span></button>
           <div class="dropdown">
-            <a href="{{ url('/generalpest') }}" target="_blank" rel="noopener">General Pest</a>
-            <a href="{{ url('/termitebaiting') }}" target="_blank" rel="noopener">Termite Baiting</a>
-            <a href="{{ url('/fumigation') }}" target="_blank" rel="noopener">Fumigation</a>
+            <a href="{{ url('/generalpest'.$servicePrefix) }}" target="_blank" rel="noopener">General Pest</a>
+            <a href="{{ url('/termitebaiting'.$servicePrefix) }}" target="_blank" rel="noopener">Termite Baiting</a>
+            <a href="{{ url('/fumigation'.$servicePrefix) }}" target="_blank" rel="noopener">Fumigation</a>
           </div>
         </div>
 
         <div class="nav-item">
           <button class="drop-trigger" type="button" aria-expanded="false">Pest <span>⌄</span></button>
           <div class="dropdown">
-            <a href="{{ url('/pest') }}" target="_blank" rel="noopener">Bugs</a>
-            <a href="{{ url('/otherpest') }}" target="_blank" rel="noopener">Other</a>
+            <a href="{{ url('/pest'.$servicePrefix) }}" target="_blank" rel="noopener">Bugs</a>
+            <a href="{{ url('/otherpest'.$servicePrefix) }}" target="_blank" rel="noopener">Other</a>
           </div>
         </div>
 
@@ -1785,16 +1969,16 @@
           <h1>{{ $heroTitle }}</h1>
           <p>{{ $heroDescription }}</p>
           <div class="hero-actions">
-            <a class="btn btn-red btn-whatsapp" href="{{ $information?->link_wa ?: 'https://wa.me/628113000655' }}" target="_blank" rel="noopener"><svg class="wa-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16.02 3.2c-7.03 0-12.75 5.62-12.75 12.54 0 2.23.6 4.38 1.74 6.27L3.2 28.8l6.98-1.78a12.9 12.9 0 0 0 5.84 1.43c7.03 0 12.75-5.62 12.75-12.54S23.05 3.2 16.02 3.2Zm0 22.98c-1.9 0-3.75-.5-5.36-1.44l-.39-.23-4.14 1.06 1.1-4.02-.26-.41a10.27 10.27 0 0 1-1.5-5.4c0-5.66 4.74-10.27 10.55-10.27 5.8 0 10.53 4.6 10.53 10.27 0 5.66-4.72 10.44-10.53 10.44Zm5.78-7.7c-.32-.16-1.88-.92-2.17-1.02-.29-.11-.5-.16-.72.16-.21.31-.82 1.02-1.01 1.23-.18.21-.37.24-.68.08-.32-.16-1.34-.49-2.55-1.56-.94-.83-1.58-1.86-1.76-2.17-.19-.32-.02-.49.14-.65.14-.14.32-.37.48-.55.16-.19.21-.32.32-.53.1-.21.05-.4-.03-.56-.08-.16-.71-1.7-.97-2.33-.26-.61-.52-.53-.72-.54h-.61c-.21 0-.56.08-.85.4-.29.31-1.11 1.08-1.11 2.63s1.14 3.06 1.3 3.27c.16.21 2.25 3.38 5.45 4.74.76.33 1.36.52 1.82.67.76.24 1.46.2 2.01.12.61-.09 1.88-.76 2.14-1.49.27-.73.27-1.35.19-1.49-.08-.13-.29-.21-.61-.37Z"/></svg><span>{{ $heroPrimaryCta }}</span><span class="btn-arrow">↗</span></a>
-            <a class="btn btn-ghost" href="{{ $heroVideo }}" target="_blank" rel="noopener">{{ !empty($isEnglish) ? 'Open Video' : 'Buka Video' }} ↗</a>
+            <a class="btn btn-red btn-whatsapp" href="{{ $info?->link_wa ?: 'https://wa.me/628113000655' }}" target="_blank" rel="noopener"><svg class="wa-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16.02 3.2c-7.03 0-12.75 5.62-12.75 12.54 0 2.23.6 4.38 1.74 6.27L3.2 28.8l6.98-1.78a12.9 12.9 0 0 0 5.84 1.43c7.03 0 12.75-5.62 12.75-12.54S23.05 3.2 16.02 3.2Zm0 22.98c-1.9 0-3.75-.5-5.36-1.44l-.39-.23-4.14 1.06 1.1-4.02-.26-.41a10.27 10.27 0 0 1-1.5-5.4c0-5.66 4.74-10.27 10.55-10.27 5.8 0 10.53 4.6 10.53 10.27 0 5.66-4.72 10.44-10.53 10.44Zm5.78-7.7c-.32-.16-1.88-.92-2.17-1.02-.29-.11-.5-.16-.72.16-.21.31-.82 1.02-1.01 1.23-.18.21-.37.24-.68.08-.32-.16-1.34-.49-2.55-1.56-.94-.83-1.58-1.86-1.76-2.17-.19-.32-.02-.49.14-.65.14-.14.32-.37.48-.55.16-.19.21-.32.32-.53.1-.21.05-.4-.03-.56-.08-.16-.71-1.7-.97-2.33-.26-.61-.52-.53-.72-.54h-.61c-.21 0-.56.08-.85.4-.29.31-1.11 1.08-1.11 2.63s1.14 3.06 1.3 3.27c.16.21 2.25 3.38 5.45 4.74.76.33 1.36.52 1.82.67.76.24 1.46.2 2.01.12.61-.09 1.88-.76 2.14-1.49.27-.73.27-1.35.19-1.49-.08-.13-.29-.21-.61-.37Z"/></svg><span>{{ $heroPrimaryCta }}</span><span class="btn-arrow">↗</span></a>
+            <a class="btn btn-red btn-video-pulse" href="{{ $heroVideo }}" target="_blank" rel="noopener"><span>{{ !empty($isEnglish) ? 'Open Video' : 'Buka Video' }}</span><span class="btn-arrow">↗</span></a>
             <a class="btn btn-ghost" href="#services">{{ $heroSecondaryCta }}</a>
           </div>
         </div>
         <div class="hero-bottom reveal">
-          <a class="hero-tile" href="{{ url('/commercial') }}" target="_blank" rel="noopener"><small>Service</small><strong>Commercial</strong></a>
-          <a class="hero-tile" href="{{ url('/residential') }}" target="_blank" rel="noopener"><small>Service</small><strong>Residential</strong></a>
-          <a class="hero-tile" href="{{ url('/industrial') }}" target="_blank" rel="noopener"><small>Service</small><strong>Factory</strong></a>
-          <a class="hero-tile" href="{{ url('/disinfection') }}" target="_blank" rel="noopener"><small>Service</small><strong>Disinfection</strong></a>
+          <a class="hero-tile" href="{{ url('/commercial'.$servicePrefix) }}" target="_blank" rel="noopener"><small>Service</small><strong>Commercial</strong></a>
+          <a class="hero-tile" href="{{ url('/residential'.$servicePrefix) }}" target="_blank" rel="noopener"><small>Service</small><strong>Residential</strong></a>
+          <a class="hero-tile" href="{{ url('/industrial'.$servicePrefix) }}" target="_blank" rel="noopener"><small>Service</small><strong>Factory</strong></a>
+          <a class="hero-tile" href="{{ url('/disinfection'.$servicePrefix) }}" target="_blank" rel="noopener"><small>Service</small><strong>Disinfection</strong></a>
         </div>
       </div>
     </section>
@@ -1914,23 +2098,23 @@
         <div class="service-grid">
           <article class="service-card reveal">
             <button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389695/Arima_foto_52_czfaeb.png" data-alt="Commercial Protection"><img src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389695/Arima_foto_52_czfaeb.png" alt="Commercial Protection" /></button>
-            <div class="card-body"><span class="badge">Service Solution</span><h3>Commercial Protection</h3><p>COMMERCIAL</p><a class="card-link" href="{{ url('/commercial') }}" target="_blank" rel="noopener">Buka halaman Commercial Protection ↗</a></div>
+            <div class="card-body"><span class="badge">Service Solution</span><h3>Commercial Protection</h3><p>COMMERCIAL</p><a class="card-link" href="{{ url('/commercial'.$servicePrefix) }}" target="_blank" rel="noopener">{{ $isEnglishHome ? 'Open Commercial Protection page' : 'Buka halaman Commercial Protection' }} ↗</a></div>
           </article>
           <article class="service-card reveal">
             <button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389695/Arima_foto_54_hhmqez.png" data-alt="Residential Protection"><img src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389695/Arima_foto_54_hhmqez.png" alt="Residential Protection" /></button>
-            <div class="card-body"><span class="badge">Service Solution</span><h3>Residential Protection</h3><p>RESIDENTIAL</p><a class="card-link" href="{{ url('/residential') }}" target="_blank" rel="noopener">Buka halaman Residential Protection ↗</a></div>
+            <div class="card-body"><span class="badge">Service Solution</span><h3>Residential Protection</h3><p>RESIDENTIAL</p><a class="card-link" href="{{ url('/residential'.$servicePrefix) }}" target="_blank" rel="noopener">{{ $isEnglishHome ? 'Open Residential Protection page' : 'Buka halaman Residential Protection' }} ↗</a></div>
           </article>
           <article class="service-card reveal">
             <button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389692/Arima_foto_51_n2ypvi.png" data-alt="Industrial Protection"><img src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389692/Arima_foto_51_n2ypvi.png" alt="Industrial Protection" /></button>
-            <div class="card-body"><span class="badge">Service Solution</span><h3>Industrial Protection</h3><p>FACTORY</p><a class="card-link" href="{{ url('/industrial') }}" target="_blank" rel="noopener">Buka halaman Industrial Protection ↗</a></div>
+            <div class="card-body"><span class="badge">Service Solution</span><h3>Industrial Protection</h3><p>FACTORY</p><a class="card-link" href="{{ url('/industrial'.$servicePrefix) }}" target="_blank" rel="noopener">{{ $isEnglishHome ? 'Open Industrial Protection page' : 'Buka halaman Industrial Protection' }} ↗</a></div>
           </article>
           <article class="service-card reveal">
             <button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389692/Arima_foto_55_tiujg5.png" data-alt="Disinfection Protection"><img src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389692/Arima_foto_55_tiujg5.png" alt="Disinfection Protection" /></button>
-            <div class="card-body"><span class="badge">Service Solution</span><h3>Disinfection Protection</h3><p>DISINFECTION</p><a class="card-link" href="{{ url('/disinfection') }}" target="_blank" rel="noopener">Buka halaman Disinfection Protection ↗</a></div>
+            <div class="card-body"><span class="badge">Service Solution</span><h3>Disinfection Protection</h3><p>DISINFECTION</p><a class="card-link" href="{{ url('/disinfection'.$servicePrefix) }}" target="_blank" rel="noopener">{{ $isEnglishHome ? 'Open Disinfection Protection page' : 'Buka halaman Disinfection Protection' }} ↗</a></div>
           </article>
           <article class="service-card reveal">
             <button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389689/Arima_foto_53_jros1p.png" data-alt="Cleaning Service"><img src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389689/Arima_foto_53_jros1p.png" alt="Cleaning Service" /></button>
-            <div class="card-body"><span class="badge">Service Solution</span><h3>Cleaning Service</h3><p>Cleaning Service</p><a class="card-link" href="{{ url('/cleaning') }}" target="_blank" rel="noopener">Buka halaman Cleaning Service ↗</a></div>
+            <div class="card-body"><span class="badge">Service Solution</span><h3>Cleaning Service</h3><p>Cleaning Service</p><a class="card-link" href="{{ url('/cleaning'.$servicePrefix) }}" target="_blank" rel="noopener">{{ $isEnglishHome ? 'Open Cleaning Service page' : 'Buka halaman Cleaning Service' }} ↗</a></div>
           </article>
         </div>
       </div>
@@ -1960,13 +2144,13 @@
           <p>Bahan Kimia, Teknologi, Sumber Daya.</p>
         </div>
         <div class="quality-grid">
-          <a class="quality-card reveal" href="{{ url('/generalpest') }}" target="_blank" rel="noopener">
+          <a class="quality-card reveal" href="{{ url('/generalpest'.$servicePrefix) }}" target="_blank" rel="noopener">
             <div><span class="quality-icon">01</span><h3>Bahan Kimia</h3><p>Kami menerapkan bahan kimia dalam jumlah yang cukup pada sasaran hama atau sumber perkembangbiakan hama. Semua bahan kimia yang kami gunakan mematuhi program HACCP dan disediakan MSDS</p></div><span class="card-link">Read more ↗</span>
           </a>
-          <a class="quality-card reveal" href="{{ url('/termitebaiting') }}" target="_blank" rel="noopener">
+          <a class="quality-card reveal" href="{{ url('/termitebaiting'.$servicePrefix) }}" target="_blank" rel="noopener">
             <div><span class="quality-icon">02</span><h3>Teknologi</h3><p>Kami menggunakan teknologi terbaru yang ramah lingkungan untuk mencapai hasil yang maksimal</p></div><span class="card-link">Read more ↗</span>
           </a>
-          <a class="quality-card reveal" href="{{ url('/fumigation') }}" target="_blank" rel="noopener">
+          <a class="quality-card reveal" href="{{ url('/fumigation'.$servicePrefix) }}" target="_blank" rel="noopener">
             <div><span class="quality-icon">03</span><h3>Sumber Daya</h3><p>Kami berpengalaman lebih dari 20 tahun dalam bidang pest baik untuk komersial, industri yang berada di Indonesia. Teknisi kami memberikan servis terbaik mulai dari persiapan hingga eksekusi.</p></div><span class="card-link">Read more ↗</span>
           </a>
         </div>
@@ -1980,9 +2164,9 @@
           <p>General Pest, Termite Baiting, Fumigation.</p>
         </div>
         <div class="method-grid">
-          <article class="method-card reveal"><span class="method-number">01</span><button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389680/Arima_foto_38_r1d4dr.png" data-alt="General Pest"><img src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389680/Arima_foto_38_r1d4dr.png" alt="General Pest" /></button><div class="card-body"><span class="badge">Method</span><h3>General Pest</h3><p>General Pest</p><a class="card-link" href="{{ url('/generalpest') }}" target="_blank" rel="noopener">Buka halaman General Pest ↗</a></div></article>
-          <article class="method-card reveal"><span class="method-number">02</span><button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389664/Arima_foto_25_p67nun.png" data-alt="Termite Baiting"><img src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389664/Arima_foto_25_p67nun.png" alt="Termite Baiting" /></button><div class="card-body"><span class="badge">Method</span><h3>Termite Baiting</h3><p>Termite Baiting</p><a class="card-link" href="{{ url('/termitebaiting') }}" target="_blank" rel="noopener">Buka halaman Termite Baiting ↗</a></div></article>
-          <article class="method-card reveal"><span class="method-number">03</span><button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389656/Arima_foto_10_unvkoc.png" data-alt="Fumigation"><img src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389656/Arima_foto_10_unvkoc.png" alt="Fumigation" /></button><div class="card-body"><span class="badge">Method</span><h3>Fumigation</h3><p>Fumigation</p><a class="card-link" href="{{ url('/fumigation') }}" target="_blank" rel="noopener">Buka halaman Fumigation ↗</a></div></article>
+          <article class="method-card reveal"><span class="method-number">01</span><button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389680/Arima_foto_38_r1d4dr.png" data-alt="General Pest"><img src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389680/Arima_foto_38_r1d4dr.png" alt="General Pest" /></button><div class="card-body"><span class="badge">Method</span><h3>General Pest</h3><p>General Pest</p><a class="card-link" href="{{ url('/generalpest'.$servicePrefix) }}" target="_blank" rel="noopener">{{ $isEnglishHome ? 'Open General Pest page' : 'Buka halaman General Pest' }} ↗</a></div></article>
+          <article class="method-card reveal"><span class="method-number">02</span><button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389664/Arima_foto_25_p67nun.png" data-alt="Termite Baiting"><img src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389664/Arima_foto_25_p67nun.png" alt="Termite Baiting" /></button><div class="card-body"><span class="badge">Method</span><h3>Termite Baiting</h3><p>Termite Baiting</p><a class="card-link" href="{{ url('/termitebaiting'.$servicePrefix) }}" target="_blank" rel="noopener">{{ $isEnglishHome ? 'Open Termite Baiting page' : 'Buka halaman Termite Baiting' }} ↗</a></div></article>
+          <article class="method-card reveal"><span class="method-number">03</span><button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389656/Arima_foto_10_unvkoc.png" data-alt="Fumigation"><img src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389656/Arima_foto_10_unvkoc.png" alt="Fumigation" /></button><div class="card-body"><span class="badge">Method</span><h3>Fumigation</h3><p>Fumigation</p><a class="card-link" href="{{ url('/fumigation'.$servicePrefix) }}" target="_blank" rel="noopener">{{ $isEnglishHome ? 'Open Fumigation page' : 'Buka halaman Fumigation' }} ↗</a></div></article>
         </div>
       </div>
     </section>
@@ -1994,8 +2178,8 @@
           <p>Bugs, Other.</p>
         </div>
         <div class="pest-grid">
-          <article class="pest-card reveal"><button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389651/Arima_foto_2_rw8cre.png" data-alt="Bugs"><img src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389651/Arima_foto_2_rw8cre.png" alt="Bugs" /></button><div class="card-body"><span class="badge">Pest</span><h3>Bugs</h3><p>Bugs</p><a class="card-link" href="{{ url('/pest') }}" target="_blank" rel="noopener">Buka halaman Bugs ↗</a></div></article>
-          <article class="pest-card reveal"><button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389650/Arima_foto_7_dviquh.png" data-alt="Other"><img src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389650/Arima_foto_7_dviquh.png" alt="Other" /></button><div class="card-body"><span class="badge">Pest</span><h3>Other</h3><p>Other</p><a class="card-link" href="{{ url('/otherpest') }}" target="_blank" rel="noopener">Buka halaman Other ↗</a></div></article>
+          <article class="pest-card reveal"><button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389651/Arima_foto_2_rw8cre.png" data-alt="Bugs"><img src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389651/Arima_foto_2_rw8cre.png" alt="Bugs" /></button><div class="card-body"><span class="badge">Pest</span><h3>Bugs</h3><p>Bugs</p><a class="card-link" href="{{ url('/pest'.$servicePrefix) }}" target="_blank" rel="noopener">{{ $isEnglishHome ? 'Open Bugs page' : 'Buka halaman Bugs' }} ↗</a></div></article>
+          <article class="pest-card reveal"><button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389650/Arima_foto_7_dviquh.png" data-alt="Other"><img src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389650/Arima_foto_7_dviquh.png" alt="Other" /></button><div class="card-body"><span class="badge">Pest</span><h3>Other</h3><p>Other</p><a class="card-link" href="{{ url('/otherpest'.$servicePrefix) }}" target="_blank" rel="noopener">{{ $isEnglishHome ? 'Open Other Pest page' : 'Buka halaman Other Pest' }} ↗</a></div></article>
         </div>
       </div>
     </section>
@@ -2033,7 +2217,7 @@
             </div>
             <div class="region-list" id="regionList" aria-label="Daftar wilayah layanan"></div>
             <div class="coverage-actions">
-              <a class="btn btn-red btn-whatsapp" id="regionWhatsapp" href="https://wa.me/628113000655" target="_blank" rel="noopener"><svg class="wa-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16.02 3.2c-7.03 0-12.75 5.62-12.75 12.54 0 2.23.6 4.38 1.74 6.27L3.2 28.8l6.98-1.78a12.9 12.9 0 0 0 5.84 1.43c7.03 0 12.75-5.62 12.75-12.54S23.05 3.2 16.02 3.2Zm0 22.98c-1.9 0-3.75-.5-5.36-1.44l-.39-.23-4.14 1.06 1.1-4.02-.26-.41a10.27 10.27 0 0 1-1.5-5.4c0-5.66 4.74-10.27 10.55-10.27 5.8 0 10.53 4.6 10.53 10.27 0 5.66-4.72 10.44-10.53 10.44Zm5.78-7.7c-.32-.16-1.88-.92-2.17-1.02-.29-.11-.5-.16-.72.16-.21.31-.82 1.02-1.01 1.23-.18.21-.37.24-.68.08-.32-.16-1.34-.49-2.55-1.56-.94-.83-1.58-1.86-1.76-2.17-.19-.32-.02-.49.14-.65.14-.14.32-.37.48-.55.16-.19.21-.32.32-.53.1-.21.05-.4-.03-.56-.08-.16-.71-1.7-.97-2.33-.26-.61-.52-.53-.72-.54h-.61c-.21 0-.56.08-.85.4-.29.31-1.11 1.08-1.11 2.63s1.14 3.06 1.3 3.27c.16.21 2.25 3.38 5.45 4.74.76.33 1.36.52 1.82.67.76.24 1.46.2 2.01.12.61-.09 1.88-.76 2.14-1.49.27-.73.27-1.35.19-1.49-.08-.13-.29-.21-.61-.37Z"/></svg><span>Konsultasi Wilayah</span><span class="btn-arrow">↗</span></a>
+              <a class="btn btn-red btn-whatsapp" id="regionWhatsapp" href="{{ $info?->link_wa ?: 'https://wa.me/628113000655' }}" target="_blank" rel="noopener"><svg class="wa-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16.02 3.2c-7.03 0-12.75 5.62-12.75 12.54 0 2.23.6 4.38 1.74 6.27L3.2 28.8l6.98-1.78a12.9 12.9 0 0 0 5.84 1.43c7.03 0 12.75-5.62 12.75-12.54S23.05 3.2 16.02 3.2Zm0 22.98c-1.9 0-3.75-.5-5.36-1.44l-.39-.23-4.14 1.06 1.1-4.02-.26-.41a10.27 10.27 0 0 1-1.5-5.4c0-5.66 4.74-10.27 10.55-10.27 5.8 0 10.53 4.6 10.53 10.27 0 5.66-4.72 10.44-10.53 10.44Zm5.78-7.7c-.32-.16-1.88-.92-2.17-1.02-.29-.11-.5-.16-.72.16-.21.31-.82 1.02-1.01 1.23-.18.21-.37.24-.68.08-.32-.16-1.34-.49-2.55-1.56-.94-.83-1.58-1.86-1.76-2.17-.19-.32-.02-.49.14-.65.14-.14.32-.37.48-.55.16-.19.21-.32.32-.53.1-.21.05-.4-.03-.56-.08-.16-.71-1.7-.97-2.33-.26-.61-.52-.53-.72-.54h-.61c-.21 0-.56.08-.85.4-.29.31-1.11 1.08-1.11 2.63s1.14 3.06 1.3 3.27c.16.21 2.25 3.38 5.45 4.74.76.33 1.36.52 1.82.67.76.24 1.46.2 2.01.12.61-.09 1.88-.76 2.14-1.49.27-.73.27-1.35.19-1.49-.08-.13-.29-.21-.61-.37Z"/></svg><span>{{ $isEnglishHome ? 'Area Consultation' : 'Konsultasi Wilayah' }}</span><span class="btn-arrow">↗</span></a>
               <a class="btn" href="https://www.google.com/maps/search/?api=1&query=ARIMA%20Indonesia%20pest%20control" target="_blank" rel="noopener">Buka Google Maps ↗</a>
             </div>
           </div>
@@ -2044,7 +2228,10 @@
               <div class="map-title"><strong>Peta Interaktif Wilayah Layanan</strong><span>OpenStreetMap + titik koordinat kota</span></div>
               <div class="map-legend"><i></i><span>Zoom peta untuk melihat titik kota yang berdekatan</span></div>
             </div>
-            <div class="map-note"><span>Klik nama wilayah / marker untuk zoom ke area layanan.</span><span id="selectedRegion">Semua wilayah</span></div>
+            <a class="map-note" id="coverageMapOpen" href="https://www.google.com/maps/search/?api=1&query=ARIMA%20Indonesia%20pest%20control" target="_blank" rel="noopener">
+              <span>Klik nama wilayah / marker untuk zoom, lalu buka di Google Maps.</span>
+              <span id="selectedRegion">Semua wilayah</span>
+            </a>
           </div>
         </div>
       </div>
@@ -2052,14 +2239,61 @@
 
     <section class="section" id="news">
       <div class="container">
+        @php
+          $newsItems = isset($latestNews) && $latestNews->isNotEmpty()
+            ? $latestNews
+            : collect([
+                (object) [
+                  'id' => 1,
+                  'title' => 'Cara Mudah Menangkap Tikus',
+                  'title_eng' => 'Easy Ways to Catch Mice',
+                  'description' => 'Ada beberapa cara yang dapat digunakan untuk menangkap tikus secara efektif dan mudah.',
+                  'description_eng' => 'Several simple methods can help catch mice effectively.',
+                  'image' => 'https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389680/Arima_foto_38_r1d4dr.png',
+                ],
+                (object) [
+                  'id' => 2,
+                  'title' => 'Hindari Kecoa di Rumah Anda',
+                  'title_eng' => 'Avoid Cockroaches in Your Home',
+                  'description' => 'Hindari Kecoa di Rumah Anda',
+                  'description_eng' => 'Avoid cockroaches in your home.',
+                  'image' => 'https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389650/Arima_foto_3_npsvfn.png',
+                ],
+                (object) [
+                  'id' => 3,
+                  'title' => 'Mengurangi Populasi Semut di Rumah',
+                  'title_eng' => 'Reduce Ant Population at Home',
+                  'description' => 'Mengurangi Populasi Semut di Rumah',
+                  'description_eng' => 'Reduce ant population at home.',
+                  'image' => 'https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389650/Arima_foto_7_dviquh.png',
+                ],
+              ]);
+          $newsTitles = $newsItems->map(fn ($item) => $isEnglishHome ? ($item->title_eng ?: $item->title) : $item->title)->filter()->take(3)->implode(', ');
+        @endphp
         <div class="section-head reveal">
-          <div><span class="kicker">Latest Post</span><h2>Latest Post</h2></div>
-          <p>Cara Mudah Menangkap Tikus, Hindari Kecoa di Rumah Anda, Mengurangi Populasi Semut di Rumah.</p>
+          <div><span class="kicker">{{ $isEnglishHome ? 'Latest Post' : 'Berita Terbaru' }}</span><h2>{{ $isEnglishHome ? 'Latest Post' : 'Berita Terbaru' }}</h2></div>
+          <p>{{ $newsTitles }}.</p>
         </div>
         <div class="news-grid">
-          <article class="news-card reveal"><button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389680/Arima_foto_38_r1d4dr.png" data-alt="Cara Mudah Menangkap Tikus"><img loading="lazy" src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389680/Arima_foto_38_r1d4dr.png" alt="Cara Mudah Menangkap Tikus" /></button><div class="card-body"><span class="badge">Latest Post</span><h3>Cara Mudah Menangkap Tikus</h3><p>Ada beberapa cara yang dapat digunakan untuk menangkap tikus secara efektif dan mudah.</p><a class="card-link" href="{{ url('/news/1') }}" target="_blank" rel="noopener">Read more ↗</a></div></article>
-          <article class="news-card reveal"><button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389650/Arima_foto_3_npsvfn.png" data-alt="Hindari Kecoa di Rumah Anda"><img loading="lazy" src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389650/Arima_foto_3_npsvfn.png" alt="Hindari Kecoa di Rumah Anda" /></button><div class="card-body"><span class="badge">Latest Post</span><h3>Hindari Kecoa di Rumah Anda</h3><p>Hindari Kecoa di Rumah Anda</p><a class="card-link" href="{{ url('/news/2') }}" target="_blank" rel="noopener">Read more ↗</a></div></article>
-          <article class="news-card reveal"><button class="image-open js-lightbox" data-src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389650/Arima_foto_7_dviquh.png" data-alt="Mengurangi Populasi Semut di Rumah"><img loading="lazy" src="https://res.cloudinary.com/dcpleyqfl/image/upload/v1782389650/Arima_foto_7_dviquh.png" alt="Mengurangi Populasi Semut di Rumah" /></button><div class="card-body"><span class="badge">Latest Post</span><h3>Mengurangi Populasi Semut di Rumah</h3><p>Mengurangi Populasi Semut di Rumah</p><a class="card-link" href="{{ url('/news/3') }}" target="_blank" rel="noopener">Read more ↗</a></div></article>
+          @foreach($newsItems as $newsItem)
+            @php
+              $newsTitle = $isEnglishHome ? ($newsItem->title_eng ?: $newsItem->title) : $newsItem->title;
+              $newsDescription = $isEnglishHome ? ($newsItem->description_eng ?: $newsItem->description) : $newsItem->description;
+              $newsImage = str_starts_with($newsItem->image ?? '', 'http') ? $newsItem->image : asset($newsItem->image ?: 'assets/img/Default_pest_control_use_white_hazmat_0.jpg');
+              $newsHref = $isEnglishHome ? route('news.show_eng', $newsItem->id) : route('news.show', $newsItem->id);
+            @endphp
+            <article class="news-card reveal">
+              <button class="image-open js-lightbox" data-src="{{ $newsImage }}" data-alt="{{ $newsTitle }}">
+                <img loading="lazy" src="{{ $newsImage }}" alt="{{ $newsTitle }}" />
+              </button>
+              <div class="card-body">
+                <span class="badge">{{ $isEnglishHome ? 'Latest Post' : 'Berita' }}</span>
+                <h3>{{ $newsTitle }}</h3>
+                <p>{{ \Illuminate\Support\Str::limit(strip_tags($newsDescription), 116) }}</p>
+                <a class="card-link" href="{{ $newsHref }}" target="_blank" rel="noopener">{{ $isEnglishHome ? 'Read more' : 'Baca selengkapnya' }} ↗</a>
+              </div>
+            </article>
+          @endforeach
         </div>
       </div>
     </section>
@@ -2071,10 +2305,26 @@
           <h2>Contact Us</h2>
           <p>Your Name. Your Email. Message to us ... Submit.</p>
           <div class="contact-list">
-            <a href="https://www.google.com/maps/search/?api=1&query=Jl.%20Raya%20Wiyung%20Indah%20No.7%20Surabaya%2060228" target="_blank" rel="noopener"><i>📍</i><span><b>Alamat</b><span>Jl. Raya Wiyung Indah No.7 Surabaya 60228</span></span></a>
-            <a href="tel:+62317661422"><i>☎</i><span><b>Telp. :</b><span>+62 31 766 1422<br />+62 31 766 4086<br />+62 811-3000-655 (SMS Only)</span></span></a>
-            <a href="mailto:info@arimaindonesia.com"><i>✉</i><span><b>Email & Website</b><span>info@arimaindonesia.com<br />arimaindonesia.com</span></span></a>
-            <a href="https://www.instagram.com/arimapestclean" target="_blank" rel="noopener"><i>IG</i><span><b>Instagram</b><span>@arimapestclean</span></span></a>
+            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($officeAddress) }}" target="_blank" rel="noopener" aria-label="Open ARIMA location in Google Maps">
+              <i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s7-5.1 7-11a7 7 0 1 0-14 0c0 5.9 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></i>
+              <span><b>{{ $isEnglishHome ? 'Google Maps' : 'Google Maps' }}</b><span>{{ $officeAddress }}</span></span>
+              <em class="contact-action">{{ $isEnglishHome ? 'Open' : 'Buka' }}</em>
+            </a>
+            <a href="tel:{{ preg_replace('/\D+/', '', $phonePrimary) }}" aria-label="Call ARIMA">
+              <i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6.1 6.1l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg></i>
+              <span><b>{{ $isEnglishHome ? 'Phone' : 'Telepon' }}</b><span>{{ $phonePrimary }}<br>{{ $phoneSecondary }}<br>{{ $phoneSms }} (SMS Only)</span></span>
+              <em class="contact-action">{{ $isEnglishHome ? 'Call' : 'Telepon' }}</em>
+            </a>
+            <a href="mailto:{{ $emailAddress }}" aria-label="Email ARIMA">
+              <i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="m22 7-10 6L2 7"/></svg></i>
+              <span><b>Email & Website</b><span>{{ $emailAddress }}<br>{{ $websiteLink }}</span></span>
+              <em class="contact-action">Email</em>
+            </a>
+            <a href="https://www.instagram.com/arimapestclean" target="_blank" rel="noopener" aria-label="Open ARIMA Instagram">
+              <i aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg></i>
+              <span><b>{{ $isEnglishHome ? 'Social Media' : 'Sosial Media' }}</b><span>@arimapestclean</span></span>
+              <em class="contact-action">Instagram</em>
+            </a>
           </div>
         </div>
         <div class="contact-side">
@@ -2090,7 +2340,7 @@
 
       <footer>
         <div class="container footer-row">
-          <a href="#home"><img src="{{ asset('assets/arima/logo-new.PNG') }}" alt="Logo ARIMA Indonesia" /></a>
+          <a href="#home"><img src="{{ $frontendLogo }}" alt="Logo ARIMA Indonesia" /></a>
           <div class="footer-links">
             <a href="#home">Home</a>
             <a href="#services">Service Solution</a>
@@ -2098,12 +2348,16 @@
             <a href="#pest">Pest</a>
             <a href="#contact">Contact Us</a>
             <a href="#news">News</a>
-            <a href="{{ url('/eng') }}" target="_blank" rel="noopener">English</a>
+            <a href="{{ $isEnglishHome ? url('/') : url('/eng') }}" target="_blank" rel="noopener">{{ $isEnglishHome ? 'Indonesia' : 'English' }}</a>
           </div>
         </div>
       </footer>
     </section>
   </main>
+
+  <a class="floating-wa" href="{{ $info?->link_wa ?: 'https://wa.me/628113000655' }}" target="_blank" rel="noopener" aria-label="Konsultasi WhatsApp ARIMA">
+    <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16.02 3.2c-7.03 0-12.75 5.62-12.75 12.54 0 2.23.6 4.38 1.74 6.27L3.2 28.8l6.98-1.78a12.9 12.9 0 0 0 5.84 1.43c7.03 0 12.75-5.62 12.75-12.54S23.05 3.2 16.02 3.2Zm0 22.98c-1.9 0-3.75-.5-5.36-1.44l-.39-.23-4.14 1.06 1.1-4.02-.26-.41a10.27 10.27 0 0 1-1.5-5.4c0-5.66 4.74-10.27 10.55-10.27 5.8 0 10.53 4.6 10.53 10.27 0 5.66-4.72 10.44-10.53 10.44Zm5.78-7.7c-.32-.16-1.88-.92-2.17-1.02-.29-.11-.5-.16-.72.16-.21.31-.82 1.02-1.01 1.23-.18.21-.37.24-.68.08-.32-.16-1.34-.49-2.55-1.56-.94-.83-1.58-1.86-1.76-2.17-.19-.32-.02-.49.14-.65.14-.14.32-.37.48-.55.16-.19.21-.32.32-.53.1-.21.05-.4-.03-.56-.08-.16-.71-1.7-.97-2.33-.26-.61-.52-.53-.72-.54h-.61c-.21 0-.56.08-.85.4-.29.31-1.11 1.08-1.11 2.63s1.14 3.06 1.3 3.27c.16.21 2.25 3.38 5.45 4.74.76.33 1.36.52 1.82.67.76.24 1.46.2 2.01.12.61-.09 1.88-.76 2.14-1.49.27-.73.27-1.35.19-1.49-.08-.13-.29-.21-.61-.37Z"/></svg>
+  </a>
 
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image popup">
     <div class="lightbox-inner">
@@ -2134,6 +2388,7 @@
     const mapReset = document.getElementById('mapReset');
     const selectedRegion = document.getElementById('selectedRegion');
     const regionWhatsapp = document.getElementById('regionWhatsapp');
+    const coverageMapOpen = document.getElementById('coverageMapOpen');
 
     const regions = [
       { name: 'Jakarta', province: 'DKI Jakarta', lat: -6.2088, lng: 106.8456 },
@@ -2155,20 +2410,23 @@
       { name: 'Bali', province: 'Bali', lat: -8.6500, lng: 115.2167 }
     ];
 
-    const whatsappBase = 'https://wa.me/628113000655?text=';
+    const whatsappBase = 'https://wa.me/{{ preg_replace('/\D+/', '', $info?->phone_wa ?: '628113000655') }}?text=';
     let coverageMap;
     let coverageBounds;
     const regionMarkers = new Map();
 
     function getRegionMessage(regionName) {
       return regionName
-        ? `Halo ARIMA Indonesia, saya ingin konsultasi layanan pest control untuk wilayah ${regionName}.`
-        : 'Halo ARIMA Indonesia, saya ingin konsultasi layanan pest control.';
+        ? `{{ $isEnglishHome ? 'Hello ARIMA Indonesia, I would like to consult about pest control service for' : 'Halo ARIMA Indonesia, saya ingin konsultasi layanan pest control untuk wilayah' }} ${regionName}.`
+        : '{{ $isEnglishHome ? 'Hello ARIMA Indonesia, I would like to consult about pest control service.' : 'Halo ARIMA Indonesia, saya ingin konsultasi layanan pest control.' }}';
     }
 
     function setWhatsapp(regionName) {
       regionWhatsapp.href = whatsappBase + encodeURIComponent(getRegionMessage(regionName));
       selectedRegion.textContent = regionName || 'Semua wilayah';
+      if (coverageMapOpen) {
+        coverageMapOpen.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(regionName ? `${regionName} pest control ARIMA Indonesia` : 'ARIMA Indonesia pest control');
+      }
     }
 
     function clearActiveRegion() {
@@ -2414,7 +2672,7 @@
       const message = encodeURIComponent(document.getElementById('message').value.trim());
       const subject = encodeURIComponent('Message to ARIMA Indonesia');
       const body = `Your Name: ${name}%0D%0AYour Email: ${email}%0D%0A%0D%0AMessage to us:%0D%0A${message}`;
-      window.location.href = `mailto:info@arimaindonesia.com?subject=${subject}&body=${body}`;
+      window.location.href = `mailto:{{ $emailAddress }}?subject=${subject}&body=${body}`;
     });
   </script>
 </body>

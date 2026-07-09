@@ -12,7 +12,7 @@ class InformationController extends Controller
 {
     public function index()
     {
-        $information = Information::first();
+        $information = Information::firstOrCreate([]);
 
         return view('information.index', compact('information'));
     }

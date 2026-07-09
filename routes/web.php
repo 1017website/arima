@@ -15,12 +15,14 @@ use App\Http\Controllers\Admin\HomeClientController as AdminHomeClientController
 use App\Http\Controllers\Admin\HomeContentController as AdminHomeContentController;
 use App\Http\Controllers\Admin\HomeIsoController as AdminHomeIsoController;
 use App\Http\Controllers\Admin\InformationController as AdminInformationController;
+use App\Http\Controllers\Admin\MaintenanceController as AdminMaintenanceController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\OtherController as AdminOtherController;
 use App\Http\Controllers\Admin\PestController as AdminPestController;
 use App\Http\Controllers\Admin\PestManagementController as AdminPestManagementController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\ResidentialController as AdminResidentialController;
+use App\Http\Controllers\Admin\SiteSettingController as AdminSiteSettingController;
 use App\Http\Controllers\Admin\SliderController as AdminSliderController;
 use App\Http\Controllers\Admin\TermiteBaitingController as AdminTermiteBaitingController;
 use App\Http\Controllers\ContactController;
@@ -78,6 +80,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/', [AdminHomeController::class, 'index'])->name('dashboard');
         Route::get('/analytics', [AdminAnalyticsController::class, 'index'])->name('analytics.index');
+        Route::get('/settings/meta-ads', [AdminSiteSettingController::class, 'editSeo'])->name('settings.meta-ads.edit');
+        Route::put('/settings/meta-ads', [AdminSiteSettingController::class, 'updateSeo'])->name('settings.meta-ads.update');
+        Route::get('/settings/logos', [AdminSiteSettingController::class, 'editLogos'])->name('settings.logos.edit');
+        Route::put('/settings/logos', [AdminSiteSettingController::class, 'updateLogos'])->name('settings.logos.update');
+        Route::get('/maintenance', [AdminMaintenanceController::class, 'index'])->name('maintenance.index');
+        Route::post('/maintenance/run', [AdminMaintenanceController::class, 'run'])->name('maintenance.run');
         Route::get('/register', [AdminAuthController::class, 'showRegistrationForm'])->name('register');
         Route::post('/register', [AdminAuthController::class, 'register']);
         Route::resource('/commercial', AdminCommercialController::class);

@@ -7,8 +7,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Arima Admin</title>
+  @php
+    $adminInfo = $siteInformation ?? null;
+    $adminFaviconPath = $adminInfo?->cms_favicon ?: $adminInfo?->frontend_favicon ?: $adminInfo?->logo_favicon;
+    $adminSidebarLogoPath = $adminInfo?->cms_sidebar_logo ?: $adminInfo?->frontend_logo ?: $adminInfo?->logo_company ?: $adminInfo?->logo_header;
+  @endphp
   <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('admin-assets/img/apple-icon.png') }}">
-  <link rel="icon" type="image/png" href="{{ asset('admin-assets/img/favicon.png') }}">
+  <link rel="icon" type="image/png" href="{{ $adminFaviconPath ? asset($adminFaviconPath) : asset('admin-assets/img/favicon.png') }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
@@ -117,6 +122,24 @@
       color: #fff;
       font-size: 20px;
       box-shadow: 0 14px 26px rgba(229,9,20,.26);
+    }
+
+    .admin-brand-logo {
+      width: 52px;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 6px;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .admin-brand-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
     .admin-brand-title {
@@ -856,7 +879,11 @@
     <aside class="admin-sidebar" aria-label="Admin navigation">
       <div class="admin-brand">
         <a href="{{ route('admin.dashboard') }}">
-          <span class="admin-brand-mark"><i class="bi bi-shield-check"></i></span>
+          @if($adminSidebarLogoPath)
+            <span class="admin-brand-logo"><img src="{{ asset($adminSidebarLogoPath) }}" alt="CMS Logo"></span>
+          @else
+            <span class="admin-brand-mark"><i class="bi bi-shield-check"></i></span>
+          @endif
           <span>
             <span class="admin-brand-title">ARIMA CMS</span>
             <span class="admin-brand-caption">Content Console</span>
@@ -877,7 +904,15 @@
         </a>
         <a class="{{ $isActive('admin/home-content*') }}" href="/admin/home-content">
           <i class="bi bi-house-gear"></i>
-          <span>SEO Settings</span>
+          <span>Home Settings</span>
+        </a>
+        <a class="{{ $isActive('admin/settings/meta-ads*') }}" href="{{ route('admin.settings.meta-ads.edit') }}">
+          <i class="bi bi-google"></i>
+          <span>Meta & Google Ads</span>
+        </a>
+        <a class="{{ $isActive('admin/settings/logos*') }}" href="{{ route('admin.settings.logos.edit') }}">
+          <i class="bi bi-image"></i>
+          <span>Logo & Favicon</span>
         </a>
         <a class="{{ $isActive('admin/analytics*') }}" href="/admin/analytics">
           <i class="bi bi-graph-up-arrow"></i>
@@ -958,6 +993,10 @@
         <a class="{{ $isActive('admin/user*') }}" href="/admin/user">
           <i class="bi bi-people"></i>
           <span>User List</span>
+        </a>
+        <a class="{{ $isActive('admin/maintenance*') }}" href="{{ route('admin.maintenance.index') }}">
+          <i class="bi bi-terminal"></i>
+          <span>Maintenance</span>
         </a>
 
         <form class="admin-logout" method="POST" action="{{ route('admin.logout') }}">
