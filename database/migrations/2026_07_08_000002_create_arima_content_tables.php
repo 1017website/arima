@@ -33,16 +33,33 @@ return new class extends Migration
         });
 
         foreach (['commercial', 'residential', 'factory', 'disinfection', 'cleaning'] as $service) {
-            Schema::create("service_{$service}", function (Blueprint $table) {
+            Schema::create("service_{$service}", function (Blueprint $table) use ($service) {
                 $table->id();
                 $table->string('title')->nullable();
                 $table->text('description')->nullable();
                 $table->text('description_eng')->nullable();
                 $table->string('background')->nullable();
                 $table->text('list_type')->nullable();
+
+                if (in_array($service, ['commercial', 'residential', 'factory'], true)) {
+                    $table->text('list_type_eng')->nullable();
+                }
+
                 $table->timestamps();
             });
         }
+
+        Schema::create('service', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('title')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('method', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('title')->nullable();
+            $table->timestamps();
+        });
 
         foreach (['general_pest', 'termite_baiting', 'fumigation'] as $method) {
             Schema::create("method_{$method}", function (Blueprint $table) {
@@ -58,6 +75,7 @@ return new class extends Migration
         Schema::create('pest', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
+            $table->string('title_eng')->nullable();
             $table->string('header_image')->nullable();
             $table->timestamps();
         });
@@ -175,11 +193,13 @@ return new class extends Migration
             'method_fumigation',
             'method_termite_baiting',
             'method_general_pest',
+            'method',
             'service_cleaning',
             'service_disinfection',
             'service_factory',
             'service_residential',
             'service_commercial',
+            'service',
             'information',
         ] as $table) {
             Schema::dropIfExists($table);

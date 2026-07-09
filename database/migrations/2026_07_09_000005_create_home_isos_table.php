@@ -57,46 +57,50 @@ return new class extends Migration
             ]);
         }
 
-        Schema::create('home_isos', function (Blueprint $table) {
-            $table->id();
-            $table->string('title')->nullable();
-            $table->string('title_eng')->nullable();
-            $table->text('image')->nullable();
-            $table->string('url')->nullable();
-            $table->unsignedInteger('sort_order')->default(0);
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('home_isos')) {
+            Schema::create('home_isos', function (Blueprint $table) {
+                $table->id();
+                $table->string('title')->nullable();
+                $table->string('title_eng')->nullable();
+                $table->text('image')->nullable();
+                $table->string('url')->nullable();
+                $table->unsignedInteger('sort_order')->default(0);
+                $table->boolean('is_active')->default(true);
+                $table->timestamps();
+            });
+        }
 
-        DB::table('home_isos')->insert([
-            [
-                'title' => 'Sertifikat ISO 1',
-                'title_eng' => 'ISO Certificate 1',
-                'image' => 'https://res.cloudinary.com/dcpleyqfl/image/upload/v1783611268/IMG_4073_ykldoe.png',
-                'sort_order' => 1,
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'Sertifikat ISO 2',
-                'title_eng' => 'ISO Certificate 2',
-                'image' => 'https://res.cloudinary.com/dcpleyqfl/image/upload/v1783611268/IMG_4074_zhymcp.png',
-                'sort_order' => 2,
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'title' => 'Sertifikat ISO 3',
-                'title_eng' => 'ISO Certificate 3',
-                'image' => 'https://res.cloudinary.com/dcpleyqfl/image/upload/v1783611268/IMG_4072_rdopba.png',
-                'sort_order' => 3,
-                'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+        if (Schema::hasTable('home_isos')) {
+            foreach ([
+                [
+                    'title' => 'Sertifikat ISO 1',
+                    'title_eng' => 'ISO Certificate 1',
+                    'image' => 'https://res.cloudinary.com/dcpleyqfl/image/upload/v1783611268/IMG_4073_ykldoe.png',
+                    'sort_order' => 1,
+                ],
+                [
+                    'title' => 'Sertifikat ISO 2',
+                    'title_eng' => 'ISO Certificate 2',
+                    'image' => 'https://res.cloudinary.com/dcpleyqfl/image/upload/v1783611268/IMG_4074_zhymcp.png',
+                    'sort_order' => 2,
+                ],
+                [
+                    'title' => 'Sertifikat ISO 3',
+                    'title_eng' => 'ISO Certificate 3',
+                    'image' => 'https://res.cloudinary.com/dcpleyqfl/image/upload/v1783611268/IMG_4072_rdopba.png',
+                    'sort_order' => 3,
+                ],
+            ] as $iso) {
+                DB::table('home_isos')->updateOrInsert(
+                    ['sort_order' => $iso['sort_order']],
+                    $iso + [
+                        'is_active' => true,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]
+                );
+            }
+        }
     }
 
     public function down(): void
