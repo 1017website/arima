@@ -761,7 +761,7 @@
         position: fixed;
         left: 18px;
         right: 18px;
-        top: 112px;
+        top: 128px;
         flex-direction: column;
         align-items: stretch;
         padding: 14px;
@@ -1840,17 +1840,59 @@
       .brand { justify-self: start; }
       .menu-toggle { justify-self: end; }
       .main-nav {
-        top: 118px;
-        left: 0;
-        right: 0;
-        padding: 0;
+        position: fixed;
+        z-index: 1300;
+        top: 128px;
+        left: 18px;
+        right: 18px;
+        height: auto;
+        max-height: calc(100vh - 148px);
+        overflow-y: auto;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 10px;
         background: rgba(3,3,5,.98);
         border: 1px solid rgba(255,255,255,.14);
+        border-radius: 18px;
+        box-shadow: 0 26px 76px rgba(0,0,0,.46);
       }
-      .nav-link, .drop-trigger { min-height: 56px; width: 100%; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,.10); }
-      .dropdown { width: 100%; }
-      .lang-switch { width: 100%; }
-      .lang-link { min-height: 48px; width: 50%; justify-content: center; }
+      .main-nav.open { display: flex; }
+      .nav-link,
+      .drop-trigger {
+        min-height: 50px;
+        width: 100%;
+        padding: 0 14px;
+        justify-content: space-between;
+        border-left: 0;
+        border-bottom: 1px solid rgba(255,255,255,.10);
+      }
+      .nav-item { width: 100%; }
+      .dropdown {
+        position: static;
+        display: none;
+        width: 100%;
+        max-height: none;
+        margin: 6px 0 10px;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        pointer-events: auto;
+        box-shadow: none;
+      }
+      .nav-item.open .dropdown { display: block; }
+      .nav-item:hover .dropdown { display: none; }
+      .nav-item.open:hover .dropdown { display: block; }
+      .lang-switch {
+        width: 100%;
+        margin-top: 8px;
+        border-left: 0;
+      }
+      .lang-link {
+        min-height: 48px;
+        width: 50%;
+        justify-content: center;
+      }
       .hero-actions {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1909,6 +1951,10 @@
       .navrow {
         min-height: 74px;
         grid-template-columns: minmax(0, 1fr) 54px;
+      }
+      .main-nav {
+        top: 84px;
+        max-height: calc(100vh - 104px);
       }
       .brand { height: 74px; }
       .brand img { width: 138px; }
