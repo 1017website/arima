@@ -1833,7 +1833,12 @@
     .lightbox-close { background: var(--red); border: 0; }
 
     @media (max-width: 1120px) {
-      .navrow { grid-template-columns: 170px 1fr 54px; }
+      .navrow {
+        grid-template-columns: minmax(0, 1fr) 54px;
+        justify-items: stretch;
+      }
+      .brand { justify-self: start; }
+      .menu-toggle { justify-self: end; }
       .main-nav {
         top: 118px;
         left: 0;
@@ -1863,7 +1868,10 @@
     @media (max-width: 640px) {
       .container, .hero-content { width: min(100% - 28px, var(--container)); }
       .topbar { display: none; }
-      .navrow { min-height: 74px; grid-template-columns: 150px 1fr 54px; }
+      .navrow {
+        min-height: 74px;
+        grid-template-columns: minmax(0, 1fr) 54px;
+      }
       .brand { height: 74px; }
       .brand img { width: 138px; }
       .hero-content { padding-top: 118px; }
