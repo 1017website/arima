@@ -1851,6 +1851,20 @@
       .dropdown { width: 100%; }
       .lang-switch { width: 100%; }
       .lang-link { min-height: 48px; width: 50%; justify-content: center; }
+      .hero-actions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .hero-actions .btn {
+        width: 100%;
+        min-width: 0;
+        margin: 0;
+        padding: 0 14px;
+        line-height: 1.25;
+        text-align: center;
+        white-space: normal;
+      }
     }
     @media (max-width: 940px) {
       .section { padding: 88px 0; }
@@ -1864,9 +1878,33 @@
       .coverage-grid { grid-template-columns: 1fr; }
       .coverage-copy { border-right: 0; border-bottom: 1px solid rgba(255,255,255,.12); }
       .hero h1 { font-size: clamp(72px, 18vw, 132px); }
+      .hero-copy {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+      }
+      .hero-actions {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .hero-actions .btn-ghost {
+        grid-column: 1 / -1;
+      }
     }
     @media (max-width: 640px) {
-      .container, .hero-content { width: min(100% - 28px, var(--container)); }
+      .container {
+        width: calc(100% - 28px);
+        max-width: var(--container);
+      }
+      .hero-content {
+        width: auto;
+        max-width: none;
+        min-width: 0;
+        margin-left: 14px;
+        margin-right: 14px;
+      }
       .topbar { display: none; }
       .navrow {
         min-height: 74px;
@@ -1880,8 +1918,22 @@
       .iso-card .iso-image-button img { max-height: 198px !important; }
       .hero-copy { padding: 24px 20px; border-left-width: 5px; }
       .hero h1 { font-size: 72px; }
-      .hero-actions { display: grid; grid-template-columns: 1fr; }
-      .hero-actions .btn { margin-right: 0; margin-bottom: -1px; }
+      .hero-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 24px;
+      }
+      .hero-actions .btn {
+        min-height: 54px;
+        margin: 0;
+        padding: 0 14px;
+      }
+      .hero-actions .btn-whatsapp::before,
+      .hero-actions .btn-video-pulse::before {
+        inset: -5px;
+        filter: blur(5px);
+      }
       .hero-bottom { grid-template-columns: 1fr; }
       .hero-tile { border-right: 0; border-bottom: 1px solid rgba(255,255,255,.13); }
       .coverage-card { width: min(100% - 28px, var(--container)); }
