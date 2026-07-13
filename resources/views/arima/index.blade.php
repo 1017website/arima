@@ -1956,7 +1956,6 @@
           $heroDescription = !empty($isEnglish)
             ? ($homeContent?->hero_description_eng ?: $homeContent?->hero_description ?: 'ARIMA Indonesia has provided green pest control, pest management, disinfection, fumigation, termite baiting, and cleaning services since 1998.')
             : ($homeContent?->hero_description ?: 'ARIMA Indonesia berdiri sejak tahun 1998 adalah perusahaan jasa di bidang utama pest control yaitu pengendalian hama dengan konsep green pest control. Green pest control adalah sistem pengendalian hama yang sangat ramah lingkungan dengan menggunakan seminimal mungkin pestisida dan didukung oleh dokumentasi / laporan yang di buat secara lengkap untuk dapat menunjang kegiatan pengendalian hama.');
-          $heroPrimaryCta = !empty($isEnglish) ? ($homeContent?->hero_primary_cta_eng ?: $homeContent?->hero_primary_cta ?: 'Request Consultation') : ($homeContent?->hero_primary_cta ?: 'Konsultasi WhatsApp');
           $heroSecondaryCta = !empty($isEnglish) ? ($homeContent?->hero_secondary_cta_eng ?: $homeContent?->hero_secondary_cta ?: 'Service Solution') : ($homeContent?->hero_secondary_cta ?: 'Service Solution');
         @endphp
         <video autoplay muted loop playsinline preload="metadata" poster="{{ $heroPoster }}">
@@ -1969,8 +1968,7 @@
           <h1>{{ $heroTitle }}</h1>
           <p>{{ $heroDescription }}</p>
           <div class="hero-actions">
-            <a class="btn btn-red btn-whatsapp" href="{{ $info?->link_wa ?: 'https://wa.me/628113000655' }}" target="_blank" rel="noopener"><svg class="wa-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M16.02 3.2c-7.03 0-12.75 5.62-12.75 12.54 0 2.23.6 4.38 1.74 6.27L3.2 28.8l6.98-1.78a12.9 12.9 0 0 0 5.84 1.43c7.03 0 12.75-5.62 12.75-12.54S23.05 3.2 16.02 3.2Zm0 22.98c-1.9 0-3.75-.5-5.36-1.44l-.39-.23-4.14 1.06 1.1-4.02-.26-.41a10.27 10.27 0 0 1-1.5-5.4c0-5.66 4.74-10.27 10.55-10.27 5.8 0 10.53 4.6 10.53 10.27 0 5.66-4.72 10.44-10.53 10.44Zm5.78-7.7c-.32-.16-1.88-.92-2.17-1.02-.29-.11-.5-.16-.72.16-.21.31-.82 1.02-1.01 1.23-.18.21-.37.24-.68.08-.32-.16-1.34-.49-2.55-1.56-.94-.83-1.58-1.86-1.76-2.17-.19-.32-.02-.49.14-.65.14-.14.32-.37.48-.55.16-.19.21-.32.32-.53.1-.21.05-.4-.03-.56-.08-.16-.71-1.7-.97-2.33-.26-.61-.52-.53-.72-.54h-.61c-.21 0-.56.08-.85.4-.29.31-1.11 1.08-1.11 2.63s1.14 3.06 1.3 3.27c.16.21 2.25 3.38 5.45 4.74.76.33 1.36.52 1.82.67.76.24 1.46.2 2.01.12.61-.09 1.88-.76 2.14-1.49.27-.73.27-1.35.19-1.49-.08-.13-.29-.21-.61-.37Z"/></svg><span>{{ $heroPrimaryCta }}</span><span class="btn-arrow">↗</span></a>
-            <a class="btn btn-red btn-video-pulse" href="{{ $heroVideo }}" target="_blank" rel="noopener"><span>{{ !empty($isEnglish) ? 'Open Video' : 'Buka Video' }}</span><span class="btn-arrow">↗</span></a>
+            <a class="btn btn-red btn-video-pulse" href="{{ $heroVideo }}" target="_blank" rel="noopener"><span>Video Company Profile</span><span class="btn-arrow">↗</span></a>
             <a class="btn btn-ghost" href="#services">{{ $heroSecondaryCta }}</a>
           </div>
         </div>
