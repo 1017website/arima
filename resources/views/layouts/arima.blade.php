@@ -422,7 +422,14 @@
         .pagination { margin-top: 28px; }
         .pagination nav { display: flex; justify-content: center; }
         @media (max-width: 960px) {
+            .navrow {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) 46px;
+                justify-items: stretch;
+            }
+            .brand { justify-self: start; }
             .menu-toggle { display: inline-grid; place-items: center; }
+            .menu-toggle { justify-self: end; }
             .main-nav {
                 position: absolute;
                 left: 0;
