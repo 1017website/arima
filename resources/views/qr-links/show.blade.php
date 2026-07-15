@@ -37,17 +37,19 @@
     }
     .brand-logo {
       display: grid;
-      width: 88px;
-      height: 88px;
+      width: 104px;
+      height: 84px;
       margin: 0 auto 20px;
       overflow: hidden;
-      border-radius: 22px;
-      background: var(--red);
+      padding: 11px;
+      border: 1px solid #eceef1;
+      border-radius: 18px;
+      background: #fff;
       box-shadow: 0 16px 34px rgba(229, 9, 20, .26);
       place-items: center;
     }
-    .brand-logo img { display: block; width: 78%; max-height: 72%; object-fit: contain; }
-    .brand-fallback { color: #fff; font-family: Sora, sans-serif; font-size: 26px; font-weight: 800; }
+    .brand-logo img { display: block; width: 100%; height: 100%; object-fit: contain; }
+    .brand-fallback { display: grid; width: 100%; height: 100%; border-radius: 12px; background: var(--red); color: #fff; font-family: Sora, sans-serif; font-size: 26px; font-weight: 800; place-items: center; }
     h1 { margin: 0; font-family: Sora, sans-serif; font-size: clamp(25px, 7vw, 32px); font-weight: 800; letter-spacing: -.04em; }
     .tagline { margin: 10px 0 26px; color: var(--muted); font-size: 14px; line-height: 1.6; }
     .link-list { display: grid; gap: 12px; }
@@ -81,8 +83,8 @@
 <body>
   <main class="link-card">
     <div class="brand-logo">
-      @if($information?->frontend_logo || $information?->logo_company || $information?->logo_header)
-        <img src="{{ asset($information?->frontend_logo ?: $information?->logo_company ?: $information?->logo_header) }}" alt="Logo ARIMA Indonesia">
+      @if($information?->cms_sidebar_logo || $information?->frontend_logo || $information?->logo_company || $information?->logo_header)
+        <img src="{{ asset($information?->cms_sidebar_logo ?: $information?->frontend_logo ?: $information?->logo_company ?: $information?->logo_header) }}" alt="Logo ARIMA Indonesia">
       @else
         <span class="brand-fallback">A</span>
       @endif
