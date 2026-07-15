@@ -31,10 +31,12 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MethodsController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PestController;
+use App\Http\Controllers\QrLinkController;
 use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/connect', [QrLinkController::class, 'show'])->name('qr-links');
 Route::get('/test-email', [ContactController::class, 'testEmail'])->name('test.email');
 
 Route::get('/commercial', [ServiceController::class, 'commercial']);

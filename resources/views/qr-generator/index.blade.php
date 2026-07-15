@@ -17,12 +17,6 @@ QR Generator
   .qr-panel-header h2 { margin: 0 0 6px; color: #14161b; font-size: 20px; font-weight: 800; }
   .qr-panel-header p { margin: 0; color: #667085; font-size: 13px; line-height: 1.6; }
   .qr-panel-body { padding: 24px; }
-  .qr-type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
-  .qr-type { display: flex; min-height: 82px; padding: 14px; border: 1px solid #e3e6ea; border-radius: 10px; background: #fbfcfd; color: #344054; cursor: pointer; flex-direction: column; align-items: flex-start; justify-content: center; gap: 7px; text-align: left; transition: .18s ease; }
-  .qr-type i { color: #e50914; font-size: 22px; }
-  .qr-type span { font-size: 13px; font-weight: 800; }
-  .qr-type:hover { border-color: #f2a5aa; background: #fff7f7; }
-  .qr-type.is-active { border-color: #e50914; background: #fff3f4; box-shadow: 0 0 0 3px rgba(229, 9, 20, .08); color: #a8060f; }
   .qr-field { margin-bottom: 18px; }
   .qr-field label { display: block; margin-bottom: 8px; color: #344054; font-size: 12px; font-weight: 800; letter-spacing: .02em; }
   .qr-field .form-control { min-height: 46px; border-color: #dfe3e8; border-radius: 8px; font-size: 14px; }
@@ -46,12 +40,9 @@ QR Generator
   .qr-status.is-error { color: #c1121f; }
   .qr-note { display: flex; width: 100%; margin-top: 16px; padding: 12px 14px; border-radius: 9px; background: #fff8e8; color: #775b16; font-size: 11px; line-height: 1.55; gap: 9px; }
   .qr-note i { margin-top: 1px; font-size: 15px; }
-  [hidden] { display: none !important; }
   @media (max-width: 980px) { .qr-page { grid-template-columns: 1fr; } }
   @media (max-width: 520px) {
     .qr-panel-body, .qr-panel-header { padding-left: 17px; padding-right: 17px; }
-    .qr-type-grid { grid-template-columns: 1fr; }
-    .qr-type { min-height: 62px; flex-direction: row; align-items: center; justify-content: flex-start; }
     .qr-preview-actions { grid-template-columns: 1fr; }
   }
 </style>
@@ -61,23 +52,11 @@ QR Generator
     <section class="qr-panel" aria-labelledby="qrGeneratorTitle">
       <div class="qr-panel-header">
         <h2 id="qrGeneratorTitle">Buat QR Code</h2>
-        <p>Pilih tujuan QR, isi alamat atau nomor, lalu generate. Semua proses dilakukan langsung di browser.</p>
+        <p>Isi ketiga link di bawah. Satu QR akan membuka halaman ARIMA Links yang berisi Website, Instagram, dan WhatsApp.</p>
       </div>
       <div class="qr-panel-body">
-        <div class="qr-type-grid" role="group" aria-label="Pilih tipe QR code">
-          <button class="qr-type is-active" type="button" data-qr-type="website" aria-pressed="true">
-            <i class="bi bi-globe2"></i><span>Website</span>
-          </button>
-          <button class="qr-type" type="button" data-qr-type="instagram" aria-pressed="false">
-            <i class="bi bi-instagram"></i><span>Instagram</span>
-          </button>
-          <button class="qr-type" type="button" data-qr-type="whatsapp" aria-pressed="false">
-            <i class="bi bi-whatsapp"></i><span>WhatsApp</span>
-          </button>
-        </div>
-
         <form id="qrForm" data-no-loader novalidate>
-          <div data-fields="website">
+          <div>
             <div class="qr-field">
               <label for="websiteValue">Alamat website</label>
               <input class="form-control" id="websiteValue" type="text" value="{{ $defaultWebsite }}" placeholder="https://arima.co.id" autocomplete="url">
@@ -85,7 +64,7 @@ QR Generator
             </div>
           </div>
 
-          <div data-fields="instagram" hidden>
+          <div>
             <div class="qr-field">
               <label for="instagramValue">Username atau link Instagram</label>
               <input class="form-control" id="instagramValue" type="text" value="@arimapestclean" placeholder="@arimapestclean" autocomplete="off">
@@ -93,7 +72,7 @@ QR Generator
             </div>
           </div>
 
-          <div data-fields="whatsapp" hidden>
+          <div>
             <div class="qr-field">
               <label for="whatsappValue">Nomor WhatsApp</label>
               <input class="form-control" id="whatsappValue" type="tel" value="{{ $defaultWhatsapp }}" placeholder="0811 3000 655" autocomplete="tel">
@@ -123,7 +102,7 @@ QR Generator
         </div>
 
         <div class="qr-result">
-          <div class="qr-result-label"><span>Tujuan QR</span><span id="qrResultType">Website</span></div>
+          <div class="qr-result-label"><span>Tujuan QR</span><span id="qrResultType">ARIMA Links</span></div>
           <p class="qr-result-value" id="qrResultValue">-</p>
         </div>
 
@@ -151,8 +130,7 @@ QR Generator
     const resultType = document.getElementById('qrResultType');
     const resultValue = document.getElementById('qrResultValue');
     const status = document.getElementById('qrStatus');
-    const typeLabels = { website: 'Website', instagram: 'Instagram', whatsapp: 'WhatsApp' };
-    let activeType = 'website';
+    const linkPageUrl = @json(route('qr-links'));
     let currentPayload = '';
 
     function setStatus(message, isError) {
@@ -215,12 +193,14 @@ QR Generator
     }
 
     function getPayload() {
-      if (activeType === 'website') return normalizeUrl(document.getElementById('websiteValue').value);
-      if (activeType === 'instagram') return getInstagramUrl(document.getElementById('instagramValue').value);
-      return getWhatsappUrl(
+      const destination = new URL(linkPageUrl);
+      destination.searchParams.set('website', normalizeUrl(document.getElementById('websiteValue').value));
+      destination.searchParams.set('instagram', getInstagramUrl(document.getElementById('instagramValue').value));
+      destination.searchParams.set('whatsapp', getWhatsappUrl(
         document.getElementById('whatsappValue').value,
         document.getElementById('whatsappMessage').value
-      );
+      ));
+      return destination.href;
     }
 
     function clearCanvas() {
@@ -259,7 +239,7 @@ QR Generator
         const payload = getPayload();
         drawQr(payload);
         currentPayload = payload;
-        resultType.textContent = typeLabels[activeType];
+        resultType.textContent = 'ARIMA Links';
         resultValue.textContent = payload;
         downloadButton.disabled = false;
         copyButton.disabled = false;
@@ -274,25 +254,6 @@ QR Generator
       }
     }
 
-    function activateType(type) {
-      activeType = type;
-      document.querySelectorAll('[data-qr-type]').forEach(function (button) {
-        const active = button.dataset.qrType === type;
-        button.classList.toggle('is-active', active);
-        button.setAttribute('aria-pressed', String(active));
-      });
-      document.querySelectorAll('[data-fields]').forEach(function (fields) {
-        fields.hidden = fields.dataset.fields !== type;
-      });
-      resultType.textContent = typeLabels[type];
-      setStatus('', false);
-      generateQr();
-    }
-
-    document.querySelectorAll('[data-qr-type]').forEach(function (button) {
-      button.addEventListener('click', function () { activateType(button.dataset.qrType); });
-    });
-
     form.addEventListener('submit', function (event) {
       event.preventDefault();
       generateQr();
@@ -301,7 +262,7 @@ QR Generator
     downloadButton.addEventListener('click', function () {
       if (!currentPayload) return;
       const link = document.createElement('a');
-      link.download = 'qr-' + activeType + '-arima.png';
+      link.download = 'qr-arima-links.png';
       link.href = canvas.toDataURL('image/png');
       document.body.appendChild(link);
       link.click();
