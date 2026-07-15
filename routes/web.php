@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\OtherController as AdminOtherController;
 use App\Http\Controllers\Admin\PestController as AdminPestController;
 use App\Http\Controllers\Admin\PestManagementController as AdminPestManagementController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\QrGeneratorController as AdminQrGeneratorController;
 use App\Http\Controllers\Admin\ResidentialController as AdminResidentialController;
 use App\Http\Controllers\Admin\SiteSettingController as AdminSiteSettingController;
 use App\Http\Controllers\Admin\SliderController as AdminSliderController;
@@ -80,6 +81,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/', [AdminHomeController::class, 'index'])->name('dashboard');
         Route::get('/analytics', [AdminAnalyticsController::class, 'index'])->name('analytics.index');
+        Route::get('/qr-generator', [AdminQrGeneratorController::class, 'index'])->name('qr-generator.index');
         Route::get('/settings/meta-ads', [AdminSiteSettingController::class, 'editSeo'])->name('settings.meta-ads.edit');
         Route::put('/settings/meta-ads', [AdminSiteSettingController::class, 'updateSeo'])->name('settings.meta-ads.update');
         Route::get('/settings/logos', [AdminSiteSettingController::class, 'editLogos'])->name('settings.logos.edit');

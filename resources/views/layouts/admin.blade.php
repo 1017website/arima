@@ -964,6 +964,10 @@
           <i class="bi bi-graph-up-arrow"></i>
           <span>Visit Analytics</span>
         </a>
+        <a class="{{ $isActive('admin/qr-generator*') }}" href="{{ route('admin.qr-generator.index') }}">
+          <i class="bi bi-qr-code"></i>
+          <span>QR Generator</span>
+        </a>
         <a class="{{ $isActive('admin/home-client*') }}" href="/admin/home-client">
           <i class="bi bi-buildings"></i>
           <span>Home Clients</span>
